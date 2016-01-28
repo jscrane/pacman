@@ -1,0 +1,108 @@
+/**
+ * http://www.frisnit.com/pac-man-machine-emulator/
+ * https://github.com/frisnit/pacman-emulator
+ */
+#include <stdarg.h>
+#include <UTFT.h>
+#include <SPI.h>
+#include <SpiRAM.h>
+#include <SD.h>
+#include <PS2Keyboard.h>
+#include <r65emu.h>
+#include <ports.h>
+#include <z80.h>
+
+#include "config.h"
+#include "display.h"
+#include "io.h"
+
+static byte irq;
+
+class IOPorts: public PortDevice<z80> {
+public:
+	byte in(word p, z80 *cpu) {
+		return 0;
+	}
+
+	void out(word p, byte b, z80 *cpu) {
+		if ((p & 0xff) == 0x0000)
+			irq = b;
+	}
+} ports;
+
+z80 cpu(memory, ports);
+ram pages[2];
+
+#include "roms/rom6e.h"
+#include "roms/rom6f.h"
+#include "roms/rom6h.h"
+#include "roms/rom6j.h"
+
+prom e6(rom6e, sizeof(rom6e));
+prom f6(rom6f, sizeof(rom6f));
+prom h6(rom6h, sizeof(rom6h));
+prom j6(rom6j, sizeof(rom6j));
+
+static bool paused;
+Display display(memory);
+IO io(display);
+
+void reset(void) {
+	hardware_reset();
+	display.begin();
+}
+
+void setup(void) {
+	hardware_init(cpu);
+
+	memory.put(e6, 0x0000);
+	memory.put(f6, 0x1000);
+	memory.put(h6, 0x2000);
+	memory.put(j6, 0x3000);
+
+	memory.put(display, 0x4000);
+	memory.put(pages[0], 0x4800);
+	memory.put(pages[1], 0x4c00);
+	memory.put(io, 0x5000);
+
+Serial.begin(115200);
+
+	reset();
+}
+
+void loop(void) {
+	static bool debug;
+
+	if (ps2.available()) {
+		unsigned scan = ps2.read2();
+		byte key = scan & 0xff;
+		if (is_down(scan))
+			io.down(key);
+		else
+			switch (key) {
+			case PS2_F1:
+				reset();
+				break;
+			case PAUSE:
+				paused = !paused;
+				break;
+			case PS2_F8:
+				debug = !debug;
+				break;
+			default:
+				io.up(key);
+				break;
+			}
+	} else if (!paused) {
+		cpu.run(1000);
+		if (cpu.ts() > 51200 && io.int_enabled()) {
+//Serial.println("raising irq");
+			cpu.reset_ts();
+			cpu.raise(irq);
+		}
+		if (debug) {
+			char buf[160];
+			Serial.println(cpu.status(buf, sizeof(buf), false));
+		}
+	}
+}
