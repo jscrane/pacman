@@ -96,7 +96,6 @@ void loop(void) {
 	} else if (!paused) {
 		cpu.run(1000);
 		if (cpu.ts() > 51200 && io.int_enabled()) {
-//Serial.println("raising irq");
 			cpu.reset_ts();
 			cpu.raise(irq);
 		}

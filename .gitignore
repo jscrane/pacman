@@ -1,4 +1,7 @@
 images/
+.deps/
+*.bin
+*.elf
 
 # Compiled Object files
 *.slo

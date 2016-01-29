@@ -1,0 +1,5 @@
+- Rotation / flipping sprites
+- drawing off-screen
+- drawing top lines
+- flipping screen: portrait/landscape
+- using arrow keys instead of h/j/k/l

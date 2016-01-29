@@ -64,18 +64,12 @@ void IO::up(byte key) {
 void IO::operator=(byte b) {
 	switch (_acc) {
 	case INT_ENABLE:
-//Serial.print("int enable ");
-//Serial.println(b);
 		_int_enabled = (b & 0x01);
 		return;
 	case SOUND_ENABLE:
-//Serial.print("sound enable ");
-//Serial.println(b);
 		_sound_enabled = (b & 0x01);
 		return;
 	case FLIP_SCREEN:
-//Serial.print("flip screen ");
-//Serial.println(b);
 		_screen_flipped = (b & 0x01);
 		return;
 	}
@@ -84,12 +78,6 @@ void IO::operator=(byte b) {
 		return;
 	}
 	if (_acc >= SPRITE_START && _acc < SPRITE_START + SPRITE_LEN) {
-/*
-Serial.print("write sprite ");
-Serial.print(_acc, 16);
-Serial.print(" ");
-Serial.println(b, 16);
-*/
 		// FIXME: remove _sprites
 		word off = _acc - SPRITE_START;
 		_sprites[off] = b;
@@ -98,12 +86,8 @@ Serial.println(b, 16);
 		return;
 	}
 	if (_acc >= WATCHDOG) {
-//Serial.print("watchdog ");
-//Serial.println(b, 16);
 		return;
 	}
-//Serial.print("unknown io write ");
-//Serial.println(_acc, 16);
 }
 
 IO::operator byte() {
@@ -115,8 +99,6 @@ IO::operator byte() {
 		if (_right) v |= 0x04;
 		if (_down) v |= 0x08;
 		if (_coin) v |= 0x20;
-//Serial.print("read inputs_0 ");
-//Serial.println(v, 16);
 		return v;
 	}
 	if (_acc >= INPUTS_1 && _acc < DIP_1) {
@@ -127,19 +109,11 @@ IO::operator byte() {
 		if (_down) v |= 0x08;
 		if (_p1_start) v |= 0x20;
 		if (_p2_start) v |= 0x40;
-//Serial.print("read inputs_1 ");
-//Serial.println(v, 16);
 		return v;
 	}
-	if (_acc >= DIP_1 && _acc < DIP_2) {
-//Serial.println("read dip_1");
+	if (_acc >= DIP_1 && _acc < DIP_2)
 		return 0xc9;
-	}
-	if (_acc >= DIP_2 && _acc < 0x100) {
-//Serial.println("read dip_2");
+	if (_acc >= DIP_2 && _acc < 0x100)
 		return 0xff;
-	}
-Serial.print("unknown io read ");
-Serial.println(_acc, 16);
 	return v;
 }
