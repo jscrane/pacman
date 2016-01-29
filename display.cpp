@@ -32,17 +32,12 @@ void Display::draw_sprite_slice(palette_entry &p, byte *cdata, int offset, int x
 	offset *= 32;
 	for (int n = 7; n >= 0; n--)			// 8 columns
 		for (int m = 3; m >= 0; m--) {		// 4 rows
-			colour &c = p.colours[cdata[offset]];
-			utft.setColor(c.red, c.green, c.blue);
-// FIXME: investigate this
-if (_dx <= (x+n)) {
-continue;
-}
-if (_dy <= (y+m)) {
-continue;
-}
-
-			utft.drawPixel(x+n, y+m);
+			unsigned px = x+n, py = y+m;
+			if (_dx > px && _dy > py) {
+				colour &c = p.colours[cdata[offset]];
+				utft.setColor(c.red, c.green, c.blue);
+				utft.drawPixel(px, py);
+			}
 			offset++;
 		}
 }
@@ -107,6 +102,7 @@ void Display::set_sprite(int n, byte sx, byte sy) {
 	palette_entry p;
 	get_tile_palette(p, _mem[0x4ff1 + n*2]);
 
+	// FIXME rotation
 	draw_sprite_slice(p, character, 0, x+8, y+12);
 	draw_sprite_slice(p, character, 1, x+8, y);
 	draw_sprite_slice(p, character, 2, x+8, y+4);
@@ -116,6 +112,4 @@ void Display::set_sprite(int n, byte sx, byte sy) {
 	draw_sprite_slice(p, character, 5, x, y);
 	draw_sprite_slice(p, character, 6, x, y+4);
 	draw_sprite_slice(p, character, 7, x, y+8);
-
-	// FIXME rotation
 }
