@@ -5,14 +5,10 @@
 #define P2_START	0x1e	// 2
 #define COIN		0x26	// 3
 
-#define KEY_LEFT	0x33	// H
-#define KEY_RIGHT	0x4b	// L
-#define KEY_UP		0x42	// K
-#define KEY_DOWN	0x3b	// J
-//#define KEY_LEFT	PS2_LEFTARROW
-//#define KEY_RIGHT	PS2_RIGHTARROW
-//#define KEY_UP		PS2_UPARROW
-//#define KEY_DOWN	PS2_DOWNARROW	
+#define KEY_LEFT	PS2_KP_4
+#define KEY_RIGHT	PS2_KP_6
+#define KEY_UP		PS2_KP_8
+#define KEY_DOWN	PS2_KP_2
 
 #define PAUSE		0x29	// space
 #define ROTATE		0x2d	// r
