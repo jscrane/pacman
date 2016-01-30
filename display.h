@@ -36,16 +36,13 @@ public:
 	virtual operator byte() { return _tiles[_acc]; }
 
 	void begin();
-	void update();
 
 	void set_sprite(int n, byte sx, byte sy);
 private:
 	void _set(word a, byte b);
-	void draw_tiles();
 	void draw_tile(word addr, int x, int y);
 	void draw_sprite_slice(palette_entry &p, byte *c, int o, int x, int y);
-	void draw_sprite_slice_fx(palette_entry &p, byte *c, int o, int x, int y);
-	void draw_sprite_slice_fy(palette_entry &p, byte *c, int o, int x, int y);
+	void draw_sprite_slice(palette_entry &p, byte *c, int o, bool fx, bool fy, int x, int y);
 
 	unsigned _xoff, _yoff;
 	byte _tiles[2048];
