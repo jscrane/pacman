@@ -45,6 +45,7 @@ private:
 	void draw_tile(word addr, int x, int y);
 	void draw_sprite_slice(palette_entry &p, byte *c, int o, int x, int y);
 	void draw_sprite_slice_fx(palette_entry &p, byte *c, int o, int x, int y);
+	void draw_sprite_slice_fy(palette_entry &p, byte *c, int o, int x, int y);
 
 	unsigned _xoff, _yoff;
 	byte _tiles[2048];
