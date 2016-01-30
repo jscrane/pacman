@@ -59,7 +59,7 @@ public:
 	bool screen_flipped() { return _screen_flipped; }
 
 private:
-	byte _sprites[SPRITE_LEN];
+	byte _sx;
 
 	bool _up, _down, _left, _right, _coin, _p1_start, _p2_start;
 	bool _int_enabled, _sound_enabled, _screen_flipped;

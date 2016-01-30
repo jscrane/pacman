@@ -62,29 +62,23 @@ void IO::up(byte key) {
 }
 
 void IO::operator=(byte b) {
+	if (_acc >= SPRITE_START && _acc < SPRITE_START + SPRITE_LEN) {
+		if (_acc & 0x01)
+			_display.set_sprite(_acc-SPRITE_START-1, _sx, b);
+		else
+			_sx = b;
+		return;
+	}
 	switch (_acc) {
 	case INT_ENABLE:
 		_int_enabled = (b & 0x01);
-		return;
+		break;
 	case SOUND_ENABLE:
 		_sound_enabled = (b & 0x01);
-		return;
+		break;
 	case FLIP_SCREEN:
 		_screen_flipped = (b & 0x01);
-		return;
-	}
-	if (_acc >= SOUND_START && _acc < SOUND_START + SOUND_LEN)
-		return;
-
-	if (_acc >= SPRITE_START && _acc < SPRITE_START + SPRITE_LEN) {
-		word off = _acc - SPRITE_START;
-		_sprites[off] = b;
-		if (off & 0x01)
-			_display.set_sprite(off-1, _sprites[off-1], _sprites[off]);
-		return;
-	}
-	if (_acc >= WATCHDOG) {
-		return;
+		break;
 	}
 }
 
