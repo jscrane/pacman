@@ -96,10 +96,10 @@ void Display::_set(word a, byte b) {
 	}
 }
 
-void Display::set_sprite(int n, byte sx, byte sy) {
+void Display::set_sprite(word off, byte sx, byte sy) {
 	int x = DISPLAY_WIDTH - sx + 15 + _xoff;
 	int y = DISPLAY_HEIGHT - sy - 16 + _yoff;
-	byte sir = _mem[0x4ff0 + n*2], character[256];
+	byte sir = _mem[0x4ff0 + off], character[256];
 	word si = 64*(sir >> 2);
 	for (unsigned i = 0; i < 64; i++) {
 		byte b = sprites[si + i];
@@ -110,7 +110,7 @@ void Display::set_sprite(int n, byte sx, byte sy) {
 	}
 
 	palette_entry p;
-	get_tile_palette(p, _mem[0x4ff1 + n*2]);
+	get_tile_palette(p, _mem[0x4ff1 + off]);
 
 	bool fx = (sir & 0x02), fy = (sir & 0x01);
 	if (fx || fy) {

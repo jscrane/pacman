@@ -58,11 +58,8 @@ public:
 	bool sound_enabled() { return _sound_enabled; }
 	bool screen_flipped() { return _screen_flipped; }
 
-	byte sprite_data(word addr) { return _sprites[addr - SPRITE_START]; }
-	byte sound_data(word addr) { return _sound[addr - SOUND_START]; }
-
 private:
-	byte _sound[SOUND_LEN], _sprites[SPRITE_LEN];
+	byte _sprites[SPRITE_LEN];
 
 	bool _up, _down, _left, _right, _coin, _p1_start, _p2_start;
 	bool _int_enabled, _sound_enabled, _screen_flipped;

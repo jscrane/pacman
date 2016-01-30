@@ -73,16 +73,14 @@ void IO::operator=(byte b) {
 		_screen_flipped = (b & 0x01);
 		return;
 	}
-	if (_acc >= SOUND_START && _acc < SOUND_START + SOUND_LEN) {
-		_sound[_acc - SOUND_START] = b;
+	if (_acc >= SOUND_START && _acc < SOUND_START + SOUND_LEN)
 		return;
-	}
+
 	if (_acc >= SPRITE_START && _acc < SPRITE_START + SPRITE_LEN) {
-		// FIXME: remove _sprites
 		word off = _acc - SPRITE_START;
 		_sprites[off] = b;
 		if (off & 0x01)
-			_display.set_sprite(off / 2, _sprites[off-1], _sprites[off]);
+			_display.set_sprite(off-1, _sprites[off-1], _sprites[off]);
 		return;
 	}
 	if (_acc >= WATCHDOG) {

@@ -37,7 +37,7 @@ public:
 
 	void begin();
 
-	void set_sprite(int n, byte sx, byte sy);
+	void set_sprite(word off, byte sx, byte sy);
 private:
 	void _set(word a, byte b);
 	void draw_tile(word addr, int x, int y);
