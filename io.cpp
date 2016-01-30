@@ -112,7 +112,8 @@ IO::operator byte() {
 		return v;
 	}
 	if (_acc >= DIP_1 && _acc < DIP_2)
-		return 0xc9;
+		return NORMAL_NAMES | DIFFICULTY_NORMAL | BONUS_AT_20000 |
+			ONE_LIFE_PER_GAME | ONE_COIN_ONE_GAME;
 	if (_acc >= DIP_2 && _acc < 0x100)
 		return 0xff;
 	return v;
