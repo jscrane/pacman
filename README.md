@@ -12,8 +12,8 @@ The latter is reproduced [here](docs/PacmanEmulation.pdf).
 
 Keyboard
 --------
-- *1* One-player start
-- *2* Two-player start
-- *3* Coin
-- *KP-8/2/4/6* Up, down, left, right
-- *space* Pause
+- 1 One-player start
+- 2 Two-player start
+- 3 Coin
+- Arrow keys: Up, down, left, right
+- Space Pause
