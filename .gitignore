@@ -2,6 +2,8 @@ images/
 .deps/
 *.bin
 *.elf
+.*.swp
+util/preprocess
 
 # Compiled Object files
 *.slo

@@ -3,9 +3,7 @@
 #include <r65emu.h>
 
 #include "display.h"
-
-#include "roms/rom5e.h"		// tiles
-#include "roms/rom5f.h"		// sprites
+#include "util/tiles_sprites.h"
 #include "roms/rom82s123_7f.h"	// colours
 #include "roms/rom82s126_4a.h"	// palette
 
@@ -24,7 +22,7 @@ static void get_tile_palette(palette_entry &p, byte index) {
 	p.set_colour(colours[palette[index+3]], 3);
 }
 
-void Display::draw_sprite_slice(palette_entry &p, byte *cdata, int offset, int x, int y) {
+void Display::draw_sprite_slice(palette_entry &p, const byte *cdata, int offset, int x, int y) {
 	offset *= 32;
 	for (int n = 7; n >= 0; n--)			// 8 columns
 		for (int m = 3; m >= 0; m--) {		// 4 rows
@@ -38,7 +36,7 @@ void Display::draw_sprite_slice(palette_entry &p, byte *cdata, int offset, int x
 		}
 }
 
-void Display::draw_sprite_slice(palette_entry &p, byte *cdata, int offset, bool fx, bool fy, int x, int y) {
+void Display::draw_sprite_slice(palette_entry &p, const byte *cdata, int offset, bool fx, bool fy, int x, int y) {
 	offset *= 32;
 	for (int n = 7; n >= 0; n--)			// 8 columns
 		for (int m = 3; m >= 0; m--) {		// 4 rows
@@ -54,18 +52,10 @@ void Display::draw_sprite_slice(palette_entry &p, byte *cdata, int offset, bool 
 
 void Display::draw_tile(word a, int x, int y) {
 	byte tile = _tiles[a];
-	byte character[64];
-	for (unsigned i = 0; i < 16; i++) {
-		byte b = tiles[tile*16 + i];
-		character[i*4  ] =  (b       & 0x01) | ((b >> 3) & 0x02);
-		character[i*4+1] = ((b >> 1) & 0x01) | ((b >> 4) & 0x02);
-		character[i*4+2] = ((b >> 2) & 0x01) | ((b >> 5) & 0x02);
-		character[i*4+3] = ((b >> 3) & 0x01) | ((b >> 6) & 0x02);
-	}
-
 	palette_entry p;
 	get_tile_palette(p, _tiles[a + 0x0400]);
 
+	const byte *character = tiles + tile*64;
 	draw_sprite_slice(p, character, 0, x, y+4);
 	draw_sprite_slice(p, character, 1, x, y);
 }
@@ -99,15 +89,8 @@ void Display::_set(word a, byte b) {
 void Display::set_sprite(word off, byte sx, byte sy) {
 	int x = DISPLAY_WIDTH - sx + 15 + _xoff;
 	int y = DISPLAY_HEIGHT - sy - 16 + _yoff;
-	byte sir = _mem[0x4ff0 + off], character[256];
-	word si = 64*(sir >> 2);
-	for (unsigned i = 0; i < 64; i++) {
-		byte b = sprites[si + i];
-		character[i*4  ] =  (b       & 0x01) | ((b >> 3) & 0x02);
-		character[i*4+1] = ((b >> 1) & 0x01) | ((b >> 4) & 0x02);
-		character[i*4+2] = ((b >> 2) & 0x01) | ((b >> 5) & 0x02);
-		character[i*4+3] = ((b >> 3) & 0x01) | ((b >> 6) & 0x02);
-	}
+	byte sir = _mem[0x4ff0 + off];
+	const byte *character = sprites + 256*(sir >> 2);
 
 	palette_entry p;
 	get_tile_palette(p, _mem[0x4ff1 + off]);
