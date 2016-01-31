@@ -83,9 +83,8 @@ void IO::operator=(byte b) {
 }
 
 IO::operator byte() {
-	byte v = 0x00;
 	if (_acc >= INPUTS_0 && _acc < INPUTS_1) {
-		v = 0x10;
+		byte v = 0x10;
 		if (_up) v |= 0x01;
 		if (_left) v |= 0x02;
 		if (_right) v |= 0x04;
@@ -94,7 +93,7 @@ IO::operator byte() {
 		return v;
 	}
 	if (_acc >= INPUTS_1 && _acc < DIP_1) {
-		v = 0x10;
+		byte v = 0x10;
 		if (_up) v |= 0x01;
 		if (_left) v |= 0x02;
 		if (_right) v |= 0x04;
@@ -103,10 +102,8 @@ IO::operator byte() {
 		if (_p2_start) v |= 0x40;
 		return v;
 	}
-	if (_acc >= DIP_1 && _acc < DIP_2)
+	if (_acc >= DIP_1)
 		return NORMAL_NAMES | DIFFICULTY_NORMAL | BONUS_AT_20000 |
 			ONE_LIFE_PER_GAME | ONE_COIN_ONE_GAME;
-	if (_acc >= DIP_2 && _acc < 0x100)
-		return 0xff;
-	return v;
+	return 0x00;
 }
