@@ -22,42 +22,22 @@ static void get_tile_palette(palette_entry &p, byte index) {
 	p.set_colour(colours[palette[index+3]], 3);
 }
 
-void Display::draw_sprite_slice(palette_entry &p, const byte *cdata, int offset, int x, int y) {
-	offset *= 32;
-	for (int n = 7; n >= 0; n--)			// 8 columns
-		for (int m = 3; m >= 0; m--) {		// 4 rows
-			unsigned px = x+n, py = y+m;
-			if (_dx > px && _dy > py) {
-				colour &c = p.colours[cdata[offset]];
-				utft.setColor(c.red, c.green, c.blue);
-				utft.drawPixel(px, py);
-			}
-			offset++;
-		}
-}
-
-void Display::draw_sprite_slice(palette_entry &p, const byte *cdata, int offset, bool fx, bool fy, int x, int y) {
-	offset *= 32;
-	for (int n = 7; n >= 0; n--)			// 8 columns
-		for (int m = 3; m >= 0; m--) {		// 4 rows
-			unsigned px = fx? x-n: x+n, py = fy? y-m: y+m;
-			if (_dx > px && px >= _xoff && _dy > py && py >= _yoff) {
-				colour &c = p.colours[cdata[offset]];
-				utft.setColor(c.red, c.green, c.blue);
-				utft.drawPixel(px, py);
-			}
-			offset++;
-		}
-}
-
 void Display::draw_tile(word a, int x, int y) {
-	byte tile = _tiles[a];
 	palette_entry p;
 	get_tile_palette(p, _tiles[a + 0x0400]);
 
-	const byte *character = tiles + tile*64;
-	draw_sprite_slice(p, character, 0, x, y+4);
-	draw_sprite_slice(p, character, 1, x, y);
+	byte tile = _tiles[a];
+	const byte *cdata = tiles + tile*64;
+	for (int n = 0; n < 8; n++)
+		for (int m = 0; m < 8; m++) {
+			unsigned px = x+n, py = y+m;
+			if (_dx > px && _dy > py) {
+				colour &c = p.colours[*cdata];
+				utft.setColor(c.red, c.green, c.blue);
+				utft.drawPixel(px, py);
+			}
+			cdata++;
+		}
 }
 
 void Display::_set(word a, byte b) {
@@ -89,32 +69,22 @@ void Display::_set(word a, byte b) {
 void Display::set_sprite(word off, byte sx, byte sy) {
 	int x = DISPLAY_WIDTH - sx + 15 + _xoff;
 	int y = DISPLAY_HEIGHT - sy - 16 + _yoff;
-	byte sir = _mem[0x4ff0 + off];
-	const byte *character = sprites + 256*(sir >> 2);
 
 	palette_entry p;
 	get_tile_palette(p, _mem[0x4ff1 + off]);
 
+	byte sir = _mem[0x4ff0 + off];
 	bool fx = (sir & 0x02), fy = (sir & 0x01);
-	if (fx || fy) {
-		draw_sprite_slice(p, character, 0, fx, fy, x+8, fy? y+4: y+12);
-		draw_sprite_slice(p, character, 1, fx, fy, x+8, fy? y+16: y);
-		draw_sprite_slice(p, character, 2, fx, fy, x+8, fy? y+12: y+4);
-		draw_sprite_slice(p, character, 3, fx, fy, x+8, y+8);
-
-		draw_sprite_slice(p, character, 4, fx, fy, fx? x+16: x, fy? y+4: y+12);
-		draw_sprite_slice(p, character, 5, fx, fy, fx? x+16: x, fy? y+16: y);
-		draw_sprite_slice(p, character, 6, fx, fy, fx? x+16: x, fy? y+12: y+4);
-		draw_sprite_slice(p, character, 7, fx, fy, fx? x+16: x, y+8);
-	} else {
-		draw_sprite_slice(p, character, 0, x+8, y+12);
-		draw_sprite_slice(p, character, 1, x+8, y);
-		draw_sprite_slice(p, character, 2, x+8, y+4);
-		draw_sprite_slice(p, character, 3, x+8, y+8);
-
-		draw_sprite_slice(p, character, 4, x, y+12);
-		draw_sprite_slice(p, character, 5, x, y);
-		draw_sprite_slice(p, character, 6, x, y+4);
-		draw_sprite_slice(p, character, 7, x, y+8);
-	}
+	const byte *cdata = sprites + 256*(sir >> 2);
+	for (int n = 0; n < 16; n++)
+		for (int m = 0; m < 16; m++) {
+			// FIXME: check "16-"
+			unsigned px = fx? x+16-n: x+n, py = fy? y+16-m: y+m;
+			if (_dx > px && _dy > py) {
+				colour &c = p.colours[*cdata];
+				utft.setColor(c.red, c.green, c.blue);
+				utft.drawPixel(px, py);
+			}
+			cdata++;
+		}
 }

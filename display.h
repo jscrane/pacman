@@ -41,8 +41,6 @@ public:
 private:
 	void _set(word a, byte b);
 	void draw_tile(word addr, int x, int y);
-	void draw_sprite_slice(palette_entry &p, const byte *c, int o, int x, int y);
-	void draw_sprite_slice(palette_entry &p, const byte *c, int o, bool fx, bool fy, int x, int y);
 
 	unsigned _xoff, _yoff;
 	byte _tiles[2048];
