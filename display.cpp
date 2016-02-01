@@ -78,8 +78,7 @@ void Display::set_sprite(word off, byte sx, byte sy) {
 	const byte *cdata = sprites + 256*(sir >> 2);
 	for (int n = 0; n < 16; n++)
 		for (int m = 0; m < 16; m++) {
-			// FIXME: check "16-"
-			unsigned px = fx? x+16-n: x+n, py = fy? y+16-m: y+m;
+			unsigned px = fx? x+15-n: x+n, py = fy? y+15-m: y+m;
 			if (_dx > px && _dy > py) {
 				colour &c = p.colours[*cdata];
 				utft.setColor(c.red, c.green, c.blue);
