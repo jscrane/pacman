@@ -65,7 +65,9 @@ void setup(void) {
 	memory.put(pages[1], 0x4c00);
 	memory.put(io, 0x5000);
 
-Serial.begin(115200);
+#ifdef DEBUGGING
+	Serial.begin(115200);
+#endif
 
 	reset();
 }
@@ -95,7 +97,7 @@ void loop(void) {
 			}
 	} else if (!paused) {
 		cpu.run(1000);
-		if (cpu.ts() > 51200 && io.int_enabled()) {
+		if (cpu.ts() > 35000 && io.int_enabled()) {
 			cpu.reset_ts();
 			cpu.raise(irq);
 		}
