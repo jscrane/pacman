@@ -30,10 +30,10 @@ public:
 
 class Display: public UTFTDisplay, public Memory::Device {
 public:
-	Display(Memory &mem): Memory::Device(sizeof(_tiles)), _mem(mem) {}
+	Display(Memory &mem): Memory::Device(sizeof(_tp)), _mem(mem) {}
 
-	virtual void operator=(byte b) { _set(_acc, b); }
-	virtual operator byte() { return _tiles[_acc]; }
+	virtual void operator=(byte b) { if (_tp[_acc] != b) _set(_acc, b); }
+	virtual operator byte() { return _tp[_acc]; }
 
 	void begin();
 	void set_sprite(word off, byte sx, byte sy);
@@ -43,7 +43,7 @@ private:
 	void draw_tile(word addr, int x, int y);
 
 	unsigned _xoff, _yoff;
-	byte _tiles[2048];
+	byte _tp[2048];
 	Memory &_mem;
 };
 

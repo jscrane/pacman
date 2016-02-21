@@ -14,7 +14,7 @@ void Display::begin() {
 	_yoff = (_dy - DISPLAY_HEIGHT) / 2;
 }
 
-static void get_tile_palette(palette_entry &p, byte index) {
+static void get_palette(palette_entry &p, byte index) {
 	index <<= 2;
 	p.set_colour(colours[palette[index  ]], 0);
 	p.set_colour(colours[palette[index+1]], 1);
@@ -22,11 +22,11 @@ static void get_tile_palette(palette_entry &p, byte index) {
 	p.set_colour(colours[palette[index+3]], 3);
 }
 
-void Display::draw_tile(word a, int x, int y) {
+void Display::draw_tile(word t, int x, int y) {
 	palette_entry p;
-	get_tile_palette(p, _tiles[a + 0x0400]);
+	get_palette(p, _tp[t + 0x0400]);
 
-	byte tile = _tiles[a];
+	byte tile = _tp[t];
 	const byte *cdata = tiles + tile*64;
 	for (int n = 0; n < 8; n++)
 		for (int m = 0; m < 8; m++) {
@@ -40,30 +40,29 @@ void Display::draw_tile(word a, int x, int y) {
 		}
 }
 
-void Display::_set(word a, byte b) {
-	if (_tiles[a] != b) {
-		_tiles[a] = b;
-		int x, y;
-		if (a >= 0x02 && a < 0x1e) {
-			x = 27 - a+0x02;
-			y = 34;
-		} else if (a >= 0x22 && a < 0x3e) {
-			x = 27 - a+0x22;
-			y = 35;
-		} else if (a >= 0x40 && a < 0x3c0) {
-			word o = a - 0x40;
-			x = 27 - o / 0x20;
-			y = 2 + o % 0x20;
-		} else if (a >= 0x3c2 && a < 0x3e0) {
-			x = 27 - a+0x3c2;
-			y = 0;
-		} else if (a >= 0x3e2 && a < 0x400) {
-			x = 27 - a+0x3e2;
-			y = 1;
-		} else
-			return;
-		draw_tile(a, 8*x + _xoff, 8*y + _yoff);
+void Display::_set(word t, byte b) {
+	_tp[t] = b;
+	if (a >= 0x400)
+		a -= 0x400;
+	int x = 0, y = 0;
+	if (a >= 0x02 && a < 0x1e) {
+		x = 27 - a+0x02;
+		y = 34;
+	} else if (a >= 0x22 && a < 0x3e) {
+		x = 27 - a+0x22;
+		y = 35;
+	} else if (a >= 0x40 && a < 0x3c0) {
+		word o = a - 0x40;
+		x = 27 - o / 0x20;
+		y = 2 + o % 0x20;
+	} else if (a >= 0x3c2 && a < 0x3e0) {
+		x = 27 - a+0x3c2;
+		y = 0;
+	} else if (a >= 0x3e2 && a < 0x400) {
+		x = 27 - a+0x3e2;
+		y = 1;
 	}
+	draw_tile(t, 8*x + _xoff, 8*y + _yoff);
 }
 
 void Display::set_sprite(word off, byte sx, byte sy) {
@@ -71,7 +70,7 @@ void Display::set_sprite(word off, byte sx, byte sy) {
 	int y = DISPLAY_HEIGHT - sy - 16 + _yoff;
 
 	palette_entry p;
-	get_tile_palette(p, _mem[0x4ff1 + off]);
+	get_palette(p, _mem[0x4ff1 + off]);
 
 	byte sir = _mem[0x4ff0 + off];
 	bool fx = (sir & 0x02), fy = (sir & 0x01);
