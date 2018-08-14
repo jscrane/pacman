@@ -48,18 +48,18 @@ public:
 		_coin = _p1_start = _p2_start = true;
 	}
 
-	void operator=(byte);
-	operator byte();
+	void operator=(uint8_t);
+	operator uint8_t();
 
-	void down(byte key);
-	void up(byte key);
+	void down(uint8_t key);
+	void up(uint8_t key);
 
 	bool int_enabled() { return _int_enabled; }
 	bool sound_enabled() { return _sound_enabled; }
 	bool screen_flipped() { return _screen_flipped; }
 
 private:
-	byte _sx;
+	uint8_t _sx;
 
 	bool _up, _down, _left, _right, _coin, _p1_start, _p2_start;
 	bool _int_enabled, _sound_enabled, _screen_flipped;

@@ -16,15 +16,15 @@
 #include "display.h"
 #include "io.h"
 
-static byte irq;
+static uint8_t irq;
 
 class IOPorts: public PortDevice<z80> {
 public:
-	byte in(word p, z80 *cpu) {
+	uint8_t in(uint16_t p, z80 *cpu) {
 		return 0;
 	}
 
-	void out(word p, byte b, z80 *cpu) {
+	void out(uint16_t p, uint8_t b, z80 *cpu) {
 		if ((p & 0xff) == 0x0000)
 			irq = b;
 	}
@@ -77,7 +77,7 @@ void loop(void) {
 
 	if (ps2.available()) {
 		unsigned scan = ps2.read2();
-		byte key = scan & 0xff;
+		uint8_t key = scan & 0xff;
 		if (is_down(scan))
 			io.down(key);
 		else

@@ -1,4 +1,4 @@
-#include <Energia.h>
+#include <Arduino.h>
 #include <PS2Keyboard.h>
 #include <r65emu.h>
 
@@ -6,7 +6,7 @@
 #include "io.h"
 #include "config.h"
 
-void IO::down(byte key) {
+void IO::down(uint8_t key) {
 	switch (key) {
 	case KEY_UP:
 		_up = false;
@@ -32,7 +32,7 @@ void IO::down(byte key) {
 	}
 }
 
-void IO::up(byte key) {
+void IO::up(uint8_t key) {
 	switch (key) {
 	case KEY_UP:
 		_up = true;
@@ -61,7 +61,7 @@ void IO::up(byte key) {
 	}
 }
 
-void IO::operator=(byte b) {
+void IO::operator=(uint8_t b) {
 	if (_acc >= SPRITE_START && _acc < SPRITE_START + SPRITE_LEN) {
 		if (_acc & 0x01)
 			_display.set_sprite(_acc-SPRITE_START-1, _sx, b);
@@ -82,9 +82,9 @@ void IO::operator=(byte b) {
 	}
 }
 
-IO::operator byte() {
+IO::operator uint8_t() {
 	if (_acc >= INPUTS_0 && _acc < INPUTS_1) {
-		byte v = 0x10;
+		uint8_t v = 0x10;
 		if (_up) v |= 0x01;
 		if (_left) v |= 0x02;
 		if (_right) v |= 0x04;
@@ -93,7 +93,7 @@ IO::operator byte() {
 		return v;
 	}
 	if (_acc >= INPUTS_1 && _acc < DIP_1) {
-		byte v = 0x10;
+		uint8_t v = 0x10;
 		if (_up) v |= 0x01;
 		if (_left) v |= 0x02;
 		if (_right) v |= 0x04;

@@ -6,9 +6,9 @@
 
 class colour {
 public:
-	byte red, green, blue;
+	uint8_t red, green, blue;
 
-	void set(byte r, byte g, byte b) {
+	void set(uint8_t r, uint8_t g, uint8_t b) {
 		red = r; green = g; blue = b;
 	}
 };
@@ -17,8 +17,8 @@ class palette_entry {
 public:
 	colour colours[4];
 
-	void set_colour(byte c, int i) {
-		byte r = 0, g = 0, b = 0;
+	void set_colour(uint8_t c, int i) {
+		uint8_t r = 0, g = 0, b = 0;
 		if (c != 0) {
 			r =  (c       & 0x01)*0x21 + ((c >> 1) & 0x01)*0x47 + ((c >> 2) & 0x01)*0x97;
 			g = ((c >> 3) & 0x01)*0x21 + ((c >> 4) & 0x01)*0x47 + ((c >> 5) & 0x01)*0x97;
@@ -32,18 +32,18 @@ class Display: public UTFTDisplay, public Memory::Device {
 public:
 	Display(Memory &mem): Memory::Device(sizeof(_tp)), _mem(mem) {}
 
-	virtual void operator=(byte b) { if (_tp[_acc] != b) _set(_acc, b); }
-	virtual operator byte() { return _tp[_acc]; }
+	virtual void operator=(uint8_t b) { if (_tp[_acc] != b) _set(_acc, b); }
+	virtual operator uint8_t() { return _tp[_acc]; }
 
 	void begin();
-	void set_sprite(word off, byte sx, byte sy);
+	void set_sprite(uint16_t off, uint8_t sx, uint8_t sy);
 
 private:
-	void _set(word a, byte b);
-	void draw_tile(word addr, int x, int y);
+	void _set(uint16_t a, uint8_t b);
+	void draw_tile(uint16_t addr, int x, int y);
 
 	unsigned _xoff, _yoff;
-	byte _tp[2048];
+	uint8_t _tp[2048];
 	Memory &_mem;
 };
 
