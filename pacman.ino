@@ -65,7 +65,7 @@ void setup(void) {
 	memory.put(pages[1], 0x4c00);
 	memory.put(io, 0x5000);
 
-#ifdef DEBUGGING
+#if defined(DEBUGGING)
 	Serial.begin(115200);
 #endif
 
@@ -101,9 +101,11 @@ void loop(void) {
 			cpu.reset_ts();
 			cpu.raise(irq);
 		}
+#if defined(DEBUGGING)
 		if (debug) {
 			char buf[160];
 			Serial.println(cpu.status(buf, sizeof(buf), false));
 		}
+#endif
 	}
 }

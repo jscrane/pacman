@@ -8,7 +8,7 @@
 #include "roms/rom82s126_4a.h"	// palette
 
 void Display::begin() {
-	UTFTDisplay::begin(VGA_BLACK, VGA_WHITE, portrait);
+	TFTDisplay::begin(VGA_BLACK, VGA_WHITE, portrait);
 	clear();
 	_xoff = (_dx - DISPLAY_WIDTH) / 2;
 	_yoff = (_dy - DISPLAY_HEIGHT) / 2;
@@ -33,8 +33,7 @@ void Display::draw_tile(uint16_t t, int x, int y) {
 			unsigned px = x+n, py = y+m;
 			if (_dx > px && _dy > py) {
 				colour &c = p.colours[*cdata];
-				utft.setColor(c.red, c.green, c.blue);
-				utft.drawPixel(px, py);
+				drawPixel(px, py, c.get());
 			}
 			cdata++;
 		}
@@ -80,8 +79,7 @@ void Display::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 			unsigned px = fx? x+15-n: x+n, py = fy? y+15-m: y+m;
 			if (_dx > px && _dy > py) {
 				colour &c = p.colours[*cdata];
-				utft.setColor(c.red, c.green, c.blue);
-				utft.drawPixel(px, py);
+				drawPixel(px, py, c.get());
 			}
 			cdata++;
 		}

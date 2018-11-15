@@ -11,6 +11,12 @@ public:
 	void set(uint8_t r, uint8_t g, uint8_t b) {
 		red = r; green = g; blue = b;
 	}
+
+	uint16_t get() {
+		uint8_t fch = ((red & 248) | green >> 5);
+		uint8_t fcl = ((green & 28)<<3 | blue >> 3);
+		return (fch<<8) | fcl;
+	}
 };
 
 class palette_entry {
@@ -28,7 +34,7 @@ public:
 	}
 };
 
-class Display: public UTFTDisplay, public Memory::Device {
+class Display: public TFTDisplay, public Memory::Device {
 public:
 	Display(Memory &mem): Memory::Device(sizeof(_tp)), _mem(mem) {}
 
