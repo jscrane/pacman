@@ -4,6 +4,7 @@ images/
 *.elf
 .*.swp
 util/preprocess
+*.d
 
 # Compiled Object files
 *.slo
