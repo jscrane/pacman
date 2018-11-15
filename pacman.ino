@@ -3,10 +3,8 @@
  * https://github.com/frisnit/pacman-emulator
  */
 #include <stdarg.h>
-#include <UTFT.h>
 #include <SPI.h>
 #include <SpiRAM.h>
-#include <SD.h>
 #include <PS2Keyboard.h>
 #include <r65emu.h>
 #include <ports.h>
