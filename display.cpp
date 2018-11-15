@@ -1,6 +1,13 @@
-#include <Arduino.h>
+#include <hardware.h>
+
+#if defined(USE_UTFT)
 #include <UTFT.h>
-#include <r65emu.h>
+#else
+#include <TFT_eSPI.h>
+#endif
+
+#include <memory.h>
+#include <tftdisplay.h>
 
 #include "display.h"
 #include "util/tiles_sprites.h"
@@ -8,7 +15,7 @@
 #include "roms/rom82s126_4a.h"	// palette
 
 void Display::begin() {
-	TFTDisplay::begin(VGA_BLACK, VGA_WHITE, portrait);
+	TFTDisplay::begin(BLACK, WHITE, portrait);
 	clear();
 	_xoff = (_dx - DISPLAY_WIDTH) / 2;
 	_yoff = (_dy - DISPLAY_HEIGHT) / 2;
