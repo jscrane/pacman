@@ -39,7 +39,7 @@ void Display::draw_tile(uint16_t t, int x, int y) {
 		for (int m = 0; m < 8; m++) {
 			unsigned px = x+n, py = y+m;
 			if (_dx > px && _dy > py) {
-				colour &c = p.colours[*cdata];
+				colour &c = p.colours[pgm_read_byte(cdata)];
 				drawPixel(px, py, c.get());
 			}
 			cdata++;
@@ -85,7 +85,7 @@ void Display::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 		for (int m = 0; m < 16; m++) {
 			unsigned px = fx? x+15-n: x+n, py = fy? y+15-m: y+m;
 			if (_dx > px && _dy > py) {
-				colour &c = p.colours[*cdata];
+				colour &c = p.colours[pgm_read_byte(cdata)];
 				drawPixel(px, py, c.get());
 			}
 			cdata++;
