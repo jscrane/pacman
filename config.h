@@ -13,4 +13,6 @@
 #define PAUSE		0x29	// space
 #define ROTATE		0x2d	// r
 
+#define ORIENT		portrait
+
 #endif
