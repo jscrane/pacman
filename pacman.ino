@@ -101,7 +101,7 @@ void loop(void) {
 #if defined(DEBUGGING)
 		if (debug) {
 			char buf[160];
-			Serial.println(cpu.status(buf, sizeof(buf), false));
+			Serial.println(cpu.status(buf, sizeof(buf)));
 		}
 #endif
 	}
