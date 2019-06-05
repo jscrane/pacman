@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <PS2Keyboard.h>
 #include <r65emu.h>
 
 #include "display.h"

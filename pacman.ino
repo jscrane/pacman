@@ -4,7 +4,6 @@
  */
 #include <stdarg.h>
 #include <SPI.h>
-#include <PS2Keyboard.h>
 #include <r65emu.h>
 #include <ports.h>
 #include <z80.h>
