@@ -1,4 +1,5 @@
 images/
+*.txt.mk
 .deps/
 *.bin
 *.elf
