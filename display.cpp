@@ -30,13 +30,10 @@ void Display::draw_tile(uint16_t t, int x, int y) {
 
 	uint8_t tile = _tp[t];
 	const uint8_t *cdata = tiles + tile*64;
-	for (int n = 0; n < 8; n++)
-		for (int m = 0; m < 8; m++) {
-			unsigned px = x+n, py = y+m;
-			if (_dx > px && _dy > py) {
-				colour &c = p.colours[pgm_read_byte(cdata)];
-				drawPixel(px, py, c.get());
-			}
+	for (int px = x; px < x+8; px++)
+		for (int py = y; py < y+8; py++) {
+			colour &c = p.colours[pgm_read_byte(cdata)];
+			drawPixel(px, py, c.get());
 			cdata++;
 		}
 }
@@ -74,15 +71,39 @@ void Display::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 	get_palette(p, _mem[0x4ff1 + off]);
 
 	uint8_t sir = _mem[0x4ff0 + off];
-	bool fx = (sir & 0x02), fy = (sir & 0x01);
 	const uint8_t *cdata = sprites + 256*(sir >> 2);
-	for (int n = 0; n < 16; n++)
-		for (int m = 0; m < 16; m++) {
-			unsigned px = fx? x+15-n: x+n, py = fy? y+15-m: y+m;
-			if (_dx > px && _dy > py) {
+	switch (sir & 0x03) {
+	case 0:	// no flip
+		for (int px = x; px < x+16; px++)
+			for (int py = y; py < y+16; py++) {
 				colour &c = p.colours[pgm_read_byte(cdata)];
 				drawPixel(px, py, c.get());
+				cdata++;
 			}
-			cdata++;
-		}
+		break;
+	case 1:	// flip y
+		for (int px = x; px < x+16; px++)
+			for (int py = y + 15; py >= y; py--) {
+				colour &c = p.colours[pgm_read_byte(cdata)];
+				drawPixel(px, py, c.get());
+				cdata++;
+			}
+		break;
+	case 2:	// flip x
+		for (int px = x+15; px >= x; px--)
+			for (int py = y; py < y+16; py++) {
+				colour &c = p.colours[pgm_read_byte(cdata)];
+				drawPixel(px, py, c.get());
+				cdata++;
+			}
+		break;
+	case 3:	// flip x and y
+		for (int px = x+15; px >= x; px--)
+			for (int py = y+15; py >= y; py--) {
+				colour &c = p.colours[pgm_read_byte(cdata)];
+				drawPixel(px, py, c.get());
+				cdata++;
+			}
+		break;
+	}
 }

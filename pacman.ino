@@ -93,9 +93,10 @@ void loop(void) {
 			}
 	} else if (!paused) {
 		cpu.run(1000);
-		if (cpu.ts() > 35000 && io.int_enabled()) {
+		if (cpu.ts() > 51200) {
 			cpu.reset_ts();
-			cpu.raise(irq);
+			if (io.int_enabled())
+				cpu.raise(irq);
 		}
 #if defined(DEBUGGING)
 		if (debug) {
