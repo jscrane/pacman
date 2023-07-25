@@ -9,7 +9,7 @@
 #include <z80.h>
 
 #include "config.h"
-#include "display.h"
+#include "screen.h"
 #include "io.h"
 
 static uint8_t irq;
@@ -40,12 +40,12 @@ prom h6(rom6h, sizeof(rom6h));
 prom j6(rom6j, sizeof(rom6j));
 
 static bool paused;
-Display display(memory);
-IO io(display);
+Screen screen(memory);
+IO io(screen);
 
 void reset(void) {
 	hardware_reset();
-	display.begin();
+	screen.begin();
 }
 
 void setup(void) {
@@ -56,7 +56,7 @@ void setup(void) {
 	memory.put(h6, 0x2000);
 	memory.put(j6, 0x3000);
 
-	memory.put(display, 0x4000);
+	memory.put(screen, 0x4000);
 	memory.put(pages[0], 0x4800);
 	memory.put(pages[1], 0x4c00);
 	memory.put(io, 0x5000);

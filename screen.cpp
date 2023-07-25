@@ -1,16 +1,16 @@
 #include <Arduino.h>
 #include <hardware.h>
 #include <memory.h>
-#include <tftdisplay.h>
+#include <display.h>
 
 #include "config.h"
-#include "display.h"
+#include "screen.h"
 #include "util/tiles_sprites.h"
 #include "roms/rom82s123_7f.h"	// colours
 #include "roms/rom82s126_4a.h"	// palette
 
-void Display::begin() {
-	TFTDisplay::begin(BLACK, WHITE, ORIENT);
+void Screen::begin() {
+	Display::begin(BLACK, WHITE, ORIENT);
 	clear();
 	_xoff = (_dx - DISPLAY_WIDTH) / 2;
 	_yoff = (_dy - DISPLAY_HEIGHT) / 2;
@@ -24,7 +24,7 @@ static void get_palette(palette_entry &p, uint8_t index) {
 	p.set_colour(colours[palette[index+3]], 3);
 }
 
-void Display::draw_tile(uint16_t t, int x, int y) {
+void Screen::draw_tile(uint16_t t, int x, int y) {
 	palette_entry p;
 	get_palette(p, _tp[t + 0x0400]);
 
@@ -38,7 +38,7 @@ void Display::draw_tile(uint16_t t, int x, int y) {
 		}
 }
 
-void Display::_set(uint16_t a, uint8_t b) {
+void Screen::_set(uint16_t a, uint8_t b) {
 	_tp[a] = b;
 	if (a >= 0x400)
 		a -= 0x400;
@@ -63,7 +63,7 @@ void Display::_set(uint16_t a, uint8_t b) {
 	draw_tile(a, 8*x + _xoff, 8*y + _yoff);
 }
 
-void Display::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
+void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 	int x = DISPLAY_WIDTH - sx + 15 + _xoff;
 	int y = DISPLAY_HEIGHT - sy - 16 + _yoff;
 

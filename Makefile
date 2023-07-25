@@ -19,12 +19,23 @@ LIBRARIES = TFT_eSPI
 endif
 
 ifeq ($t, esp32)
-BOARD := node32s
 UPLOAD_SPEED := 921600
+TERMINAL_SPEED := 115200
+LIBRARIES = FS SPIFFS
+
+ifeq ($b, lilygo)
+BOARD := ttgo-t7-v14-mini32
+SERIAL_PORT := /dev/ttyACM0
+CPPFLAGS += -DHARDWARE_H=\"hw/lilygo-vga32.h\"
+LIBRARIES += FabGL WiFi
+
+else
+BOARD := node32s
 CPPFLAGS = -DUSER_SETUP_LOADED -DILI9341_DRIVER -DTFT_CS=5 -DTFT_DC=2 \
 	-DTFT_RST=-1 -DSPI_FREQUENCY=40000000 -DLOAD_GLCD \
 	-DHARDWARE_H=\"hw/esp32-espi.h\"
 LIBRARIES = TFT_eSPI
+endif
 endif
 
 include $t.mk

@@ -43,7 +43,7 @@
 
 class IO: public Memory::Device {
 public:
-	IO(Display &display): Memory::Device(256), _display(display) {
+	IO(Screen &screen): Memory::Device(256), _screen(screen) {
 		_up = _down = _left = _right = true;
 		_coin = _p1_start = _p2_start = true;
 	}
@@ -64,7 +64,7 @@ private:
 	bool _up, _down, _left, _right, _coin, _p1_start, _p2_start;
 	bool _int_enabled, _sound_enabled, _screen_flipped;
 
-	Display &_display;
+	Screen &_screen;
 };
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef __DISPLAY_H__
-#define __DISPLAY_H__
+#ifndef __SCREEN_H__
+#define __SCREEN_H__
 
 #define DISPLAY_WIDTH	224
 #define DISPLAY_HEIGHT	288
@@ -34,9 +34,9 @@ public:
 	}
 };
 
-class Display: public TFTDisplay, public Memory::Device {
+class Screen: public Display, public Memory::Device {
 public:
-	Display(Memory &mem): Memory::Device(sizeof(_tp)), _mem(mem) {}
+	Screen(Memory &mem): Memory::Device(sizeof(_tp)), _mem(mem) {}
 
 	virtual void operator=(uint8_t b) { if (_tp[_acc] != b) _set(_acc, b); }
 	virtual operator uint8_t() { return _tp[_acc]; }
