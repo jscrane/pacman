@@ -17,6 +17,8 @@
 #define ORIENT		portrait
 #elif defined(USE_ESPI)
 #define ORIENT		reverse_portrait
+#elif defined(USE_VGA)
+#define ORIENT		landscape
 #endif
 
 #endif

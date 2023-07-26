@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <r65emu.h>
 
-#include "display.h"
+#include "screen.h"
 #include "io.h"
 #include "config.h"
 
@@ -63,7 +63,7 @@ void IO::up(uint8_t key) {
 void IO::operator=(uint8_t b) {
 	if (_acc >= SPRITE_START && _acc < SPRITE_START + SPRITE_LEN) {
 		if (_acc & 0x01)
-			_display.set_sprite(_acc-SPRITE_START-1, _sx, b);
+			_screen.set_sprite(_acc-SPRITE_START-1, _sx, b);
 		else
 			_sx = b;
 		return;
