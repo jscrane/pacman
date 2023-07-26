@@ -10,10 +10,8 @@
 #include "roms/rom82s126_4a.h"	// palette
 
 void Screen::begin() {
-	Display::begin(BLACK, WHITE, ORIENT);
+	Display::begin(BLACK, WHITE, ORIENT, DISPLAY_WIDTH, DISPLAY_HEIGHT);
 	clear();
-	_xoff = (_dx - DISPLAY_WIDTH) / 2;
-	_yoff = (_dy - DISPLAY_HEIGHT) / 2;
 }
 
 static void get_palette(palette_entry &p, uint8_t index) {
@@ -60,12 +58,12 @@ void Screen::_set(uint16_t a, uint8_t b) {
 		x = 27 - a+0x3e2;
 		y = 1;
 	}
-	draw_tile(a, 8*x + _xoff, 8*y + _yoff);
+	draw_tile(a, 8*x, 8*y);
 }
 
 void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
-	int x = DISPLAY_WIDTH - sx + 15 + _xoff;
-	int y = DISPLAY_HEIGHT - sy - 16 + _yoff;
+	int x = DISPLAY_WIDTH - sx + 15;
+	int y = DISPLAY_HEIGHT - sy - 16;
 
 	palette_entry p;
 	get_palette(p, _mem[0x4ff1 + off]);

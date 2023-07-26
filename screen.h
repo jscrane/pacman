@@ -48,7 +48,6 @@ private:
 	void _set(uint16_t a, uint8_t b);
 	void draw_tile(uint16_t addr, int x, int y);
 
-	unsigned _xoff, _yoff;
 	uint8_t _tp[2048];
 	Memory &_mem;
 };
