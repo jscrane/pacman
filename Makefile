@@ -2,8 +2,8 @@ t ?= esp32
 
 ifeq ($t, tivac)
 BOARD := EK-LM4F120XL
-CPPFLAGS = -DHARDWARE_H=\"hw/lm4f-utft.h\"
-LIBRARIES = UTFT
+CPPFLAGS = -DHARDWARE_H=\"hw/stellarpad-example.h\"
+LIBRARIES = UTFT SD SpiRAM
 endif
 
 ifeq ($t, esp8266)
@@ -14,7 +14,7 @@ EESZ := 4M
 F_CPU := 80
 CPPFLAGS = -DUSER_SETUP_LOADED -DILI9341_DRIVER -DTFT_CS=PIN_D8 -DTFT_DC=PIN_D1 \
 	-DTFT_RST=-1 -DSPI_FREQUENCY=40000000 -DLOAD_GLCD \
-	-DHARDWARE_H=\"hw/esp8266-pwm.h\"
+	-DHARDWARE_H=\"hw/esp8bit.h\"
 LIBRARIES = TFT_eSPI
 endif
 
@@ -26,14 +26,14 @@ LIBRARIES = FS SPIFFS
 ifeq ($b, lilygo)
 BOARD := ttgo-t7-v14-mini32
 SERIAL_PORT := /dev/ttyACM0
-CPPFLAGS += -DHARDWARE_H=\"hw/lilygo-vga32.h\"
+CPPFLAGS += -DHARDWARE_H=\"hw/ttgo-t7-v14-mini32.h\"
 LIBRARIES += FabGL WiFi
 
 else
 BOARD := node32s
 CPPFLAGS += -DUSER_SETUP_LOADED -DILI9341_DRIVER -DTFT_CS=5 -DTFT_DC=2 \
 	-DTFT_RST=-1 -DSPI_FREQUENCY=40000000 -DLOAD_GLCD \
-	-DHARDWARE_H=\"hw/esp32-espi.h\"
+	-DHARDWARE_H=\"hw/node32s-example.h\"
 LIBRARIES += TFT_eSPI
 endif
 endif
