@@ -27,7 +27,7 @@ public:
 } ports;
 
 z80 cpu(memory, ports);
-ram pages[2];
+ram<> pages[2];
 
 #include "roms/rom6e.h"
 #include "roms/rom6f.h"
