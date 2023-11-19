@@ -3,7 +3,6 @@
  * https://github.com/frisnit/pacman-emulator
  */
 #include <stdarg.h>
-#include <SPI.h>
 #include <r65emu.h>
 #include <ports.h>
 #include <z80.h>
