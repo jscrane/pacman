@@ -80,7 +80,7 @@ void loop(void) {
 	kbd.poll(io);
 
 	if (!io.paused()) {
-		cpu.run(1000);
+		hardware_run();
 		if (cpu.ts() > 51200) {
 			cpu.reset_ts();
 			if (io.int_enabled())
