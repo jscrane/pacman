@@ -38,13 +38,25 @@ prom f6(rom6f, sizeof(rom6f));
 prom h6(rom6h, sizeof(rom6h));
 prom j6(rom6j, sizeof(rom6j));
 
-static bool paused;
+ps2_kbd kbd;
 Screen screen(memory);
 IO io(screen);
 
 void reset(void) {
 	hardware_reset();
+	kbd.reset();
 	screen.begin();
+}
+
+void function_keys(uint8_t key) {
+	switch (key) {
+	case 1:
+		reset();
+		break;
+	case 10:
+		hardware_debug_cpu();
+		break;
+	}
 }
 
 void setup(void) {
@@ -60,48 +72,18 @@ void setup(void) {
 	memory.put(pages[1], 0x4c00);
 	memory.put(io, 0x5000);
 
-#if defined(DEBUGGING)
-	Serial.begin(115200);
-#endif
-
 	reset();
 }
 
 void loop(void) {
-	static bool debug;
 
-	if (ps2.available()) {
-		unsigned scan = ps2.read2();
-		uint8_t key = scan & 0xff;
-		if (is_down(scan))
-			io.down(key);
-		else
-			switch (key) {
-			case PS2_F1:
-				reset();
-				break;
-			case PAUSE:
-				paused = !paused;
-				break;
-			case PS2_F8:
-				debug = !debug;
-				break;
-			default:
-				io.up(key);
-				break;
-			}
-	} else if (!paused) {
-		cpu.run(1000);
+	kbd.poll(io);
+
+	if (!io.paused() && hardware_run()) {
 		if (cpu.ts() > 51200) {
 			cpu.reset_ts();
 			if (io.int_enabled())
 				cpu.raise(irq);
 		}
-#if defined(DEBUGGING)
-		if (debug) {
-			char buf[160];
-			Serial.println(cpu.status(buf, sizeof(buf)));
-		}
-#endif
 	}
 }
