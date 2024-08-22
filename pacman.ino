@@ -38,9 +38,9 @@ prom f6(rom6f, sizeof(rom6f));
 prom h6(rom6h, sizeof(rom6h));
 prom j6(rom6j, sizeof(rom6j));
 
-ps2_kbd kbd;
 Screen screen(memory);
 IO io(screen);
+ps2_raw_kbd kbd(io);
 
 void reset(void) {
 	hardware_reset();
@@ -77,7 +77,7 @@ void setup(void) {
 
 void loop(void) {
 
-	kbd.poll(io);
+	kbd.poll();
 
 	if (!io.paused()) {
 		hardware_run();
