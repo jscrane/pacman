@@ -41,7 +41,7 @@
 #define ALTERNATE_NAMES		0b00000000
 #define NORMAL_NAMES		0b10000000
 
-class IO: public Memory::Device {
+class IO: public Memory::Device, public matrix_keyboard {
 public:
 	IO(Screen &screen): Memory::Device(256), _screen(screen) {
 		_up = _down = _left = _right = true;
@@ -57,12 +57,13 @@ public:
 	bool int_enabled() { return _int_enabled; }
 	bool sound_enabled() { return _sound_enabled; }
 	bool screen_flipped() { return _screen_flipped; }
+	bool paused() { return _paused; }
 
 private:
 	uint8_t _sx;
 
 	bool _up, _down, _left, _right, _coin, _p1_start, _p2_start;
-	bool _int_enabled, _sound_enabled, _screen_flipped;
+	bool _int_enabled, _sound_enabled, _screen_flipped, _paused;
 
 	Screen &_screen;
 };

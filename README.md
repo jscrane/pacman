@@ -10,6 +10,8 @@ was a useful reference, as was Chris Lomont's [Pac Man emulation
 guide](http://www.lomont.org/Software/Games/PacMan/PacmanEmulation.pdf).
 (Reproduced [here](docs/PacmanEmulation.pdf).)
 
+There is a commented disassembly [here](http://cubeman.org/arcade-source/pacman.asm).
+
 There are still several bugs, see issue #1.
 
 Keyboard

@@ -54,6 +54,9 @@ void IO::up(uint8_t key) {
 	case COIN:
 		_coin = true;
 		break;
+	case PAUSE:
+		_paused = !_paused;
+		break;
 	case ROTATE:
 		_screen_flipped = !_screen_flipped;
 		break;
