@@ -13,13 +13,13 @@
 
 static uint8_t irq;
 
-class IOPorts: public PortDevice<z80> {
+class IOPorts: public PortDevice {
 public:
-	uint8_t in(uint16_t p, z80 *cpu) {
+	uint8_t in(uint16_t p) {
 		return 0;
 	}
 
-	void out(uint16_t p, uint8_t b, z80 *cpu) {
+	void out(uint16_t p, uint8_t b) {
 		if ((p & 0xff) == 0x0000)
 			irq = b;
 	}
