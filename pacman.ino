@@ -25,6 +25,7 @@ public:
 	}
 } ports;
 
+Memory memory;
 z80 cpu(memory, ports);
 ram<> pages[2];
 
