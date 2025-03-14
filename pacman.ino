@@ -4,29 +4,14 @@
  */
 #include <stdarg.h>
 #include <r65emu.h>
-#include <ports.h>
 #include <z80.h>
 
 #include "config.h"
 #include "screen.h"
 #include "io.h"
 
-static uint8_t irq;
-
-class IOPorts: public PortDevice {
-public:
-	uint8_t in(uint16_t p) {
-		return 0;
-	}
-
-	void out(uint16_t p, uint8_t b) {
-		if ((p & 0xff) == 0x0000)
-			irq = b;
-	}
-} ports;
-
 Memory memory;
-z80 cpu(memory, ports);
+z80 cpu(memory);
 ram<> pages[2];
 
 #include "roms/rom6e.h"
@@ -61,7 +46,17 @@ void function_keys(uint8_t key) {
 }
 
 void setup(void) {
+
+	static uint8_t vec;
+
+	cpu.set_port_out_handler([](uint16_t p, uint8_t b) {
+		if ((p & 0xff) == 0x0000)
+			vec = b;
+	});
+
 	hardware_init(cpu);
+
+	hardware_interval_timer(16, []() { cpu.irq(vec); });
 
 	memory.put(e6, 0x0000);
 	memory.put(f6, 0x1000);
@@ -80,12 +75,6 @@ void loop(void) {
 
 	kbd.poll();
 
-	if (!io.paused()) {
+	if (!io.paused())
 		hardware_run();
-		if (cpu.ts() > 51200) {
-			cpu.reset_ts();
-			if (io.int_enabled())
-				cpu.raise(irq);
-		}
-	}
 }

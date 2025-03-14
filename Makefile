@@ -1,7 +1,9 @@
 t ?= esp32
 
-CPPFLAGS = -DNO_STORAGE -DNO_SPIRAM
-LIBRARIES = SPI PS2KeyRaw
+#TERMINAL_EXTRA_FLAGS := -C serialout.txt
+#CPPFLAGS = -DDEBUGGING=0x01
+CPPFLAGS += -DNO_STORAGE -DNO_SPIRAM
+LIBRARIES = SPI PS2KeyRaw SimpleTimer
 TERMINAL_SPEED := 115200
 
 ifeq ($t, tivac)
@@ -24,12 +26,13 @@ endif
 
 ifeq ($t, esp32)
 UPLOADSPEED := 921600
+LIBRARIES += Network
 
 ifeq ($b, lilygo)
 BOARD := ttgo-t7-v14-mini32
 SERIAL_PORT := /dev/ttyACM0
 CPPFLAGS += -DHARDWARE_H=\"hw/ttgo-t7-v14-mini32.h\"
-LIBRARIES += FabGL WiFi
+LIBRARIES += ESP32Lib WiFi
 
 else
 BOARD := lolin32
