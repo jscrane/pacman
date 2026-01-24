@@ -1,9 +1,7 @@
 Pac Man
 ========
 
-Pacman emulation on
-[Stellarpad](http://www.energia.nu/Guide_StellarisLaunchPad.html) using 
-[Energia](http://energia.nu/).
+Pacman emulation with help from...
 
 Frisnit's [Pac Man Emulator](http://www.frisnit.com/pac-man-machine-emulator/)
 was a useful reference, as was Chris Lomont's [Pac Man emulation 
@@ -16,6 +14,8 @@ There are still several bugs, see issue #1.
 
 Keyboard
 --------
+
+This emulation requires a PS/2 keyboard:
 - 1: One-player start
 - 2: Two-player start
 - 3: Coin

@@ -12,6 +12,14 @@ CPPFLAGS += -DHARDWARE_H=\"hw/stellarpad-example.h\"
 LIBRARIES += UTFT
 endif
 
+ifeq ($t, rp2040)
+BOARD := adafruit_feather_dvi
+FLASH := 8388608_2097152
+TERMINAL_SPEED := 115200
+CPPFLAGS += -DHARDWARE_H=\"hw/adafruit_feather_dvi.h\"
+LIBRARIES += LittleFS PicoDVI Adafruit_GFX Adafruit_BusIO Wire
+endif
+
 ifeq ($t, esp8266)
 BOARD := d1_mini
 BAUD := 921600

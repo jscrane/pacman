@@ -12,6 +12,7 @@
 
 Memory memory;
 z80 cpu(memory);
+Machine machine(cpu);
 ram<> pages[2];
 
 #include "roms/rom6e.h"
@@ -28,19 +29,13 @@ Screen screen(memory);
 IO io(screen);
 ps2_raw_kbd kbd(io);
 
-void reset(void) {
-	hardware_reset();
-	kbd.reset();
-	screen.begin();
-}
-
-void function_keys(uint8_t key) {
+static void function_keys(uint8_t key) {
 	switch (key) {
 	case 1:
-		reset();
+		machine.reset();
 		break;
 	case 10:
-		hardware_debug_cpu();
+		machine.debug_cpu();
 		break;
 	}
 }
@@ -54,9 +49,9 @@ void setup(void) {
 			vec = b;
 	});
 
-	hardware_init(cpu);
+	machine.init();
 
-	hardware_interval_timer(16, []() { cpu.irq(vec); });
+	machine.interval_timer(16, []() { cpu.irq(vec); });
 
 	memory.put(e6, 0x0000);
 	memory.put(f6, 0x1000);
@@ -68,7 +63,13 @@ void setup(void) {
 	memory.put(pages[1], 0x4c00);
 	memory.put(io, 0x5000);
 
-	reset();
+	kbd.register_fnkey_handler(function_keys);
+
+	machine.register_reset_handler([](bool) {
+		kbd.reset();
+		screen.begin();
+	});
+	machine.reset();
 }
 
 void loop(void) {
@@ -76,5 +77,5 @@ void loop(void) {
 	kbd.poll();
 
 	if (!io.paused())
-		hardware_run();
+		machine.run();
 }
