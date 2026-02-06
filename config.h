@@ -1,5 +1,4 @@
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
+#pragma once
 
 #define P1_START	0x16	// 1
 #define P2_START	0x1e	// 2
@@ -19,6 +18,4 @@
 #define ORIENT		reverse_portrait
 #elif defined(USE_VGA_FABGL) || defined(USE_VGA_BITLUNI) || defined(USE_DVI)
 #define ORIENT		landscape
-#endif
-
 #endif

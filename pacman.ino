@@ -12,7 +12,7 @@
 
 Memory memory;
 z80 cpu(memory);
-Machine machine(cpu);
+Arduino machine(cpu);
 ram<> pages[2];
 
 #include "roms/rom6e.h"
@@ -49,7 +49,7 @@ void setup(void) {
 			vec = b;
 	});
 
-	machine.init();
+	machine.begin();
 
 	machine.interval_timer(16, []() { cpu.irq(vec); });
 

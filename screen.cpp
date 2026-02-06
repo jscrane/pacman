@@ -1,7 +1,8 @@
 #include <Arduino.h>
-#include <hardware.h>
+#include <machine.h>
 #include <memory.h>
 #include <display.h>
+#include <hardware.h>
 
 #include "config.h"
 #include "screen.h"
