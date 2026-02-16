@@ -6,15 +6,9 @@ CPPFLAGS += -DNO_STORAGE -DNO_SPIRAM
 LIBRARIES = SPI PS2KeyRaw SimpleTimer
 TERMINAL_SPEED := 115200
 
-ifeq ($t, tivac)
-BOARD := EK-LM4F120XL
-CPPFLAGS += -DHARDWARE_H=\"hw/stellarpad-example.h\"
-LIBRARIES += UTFT
-endif
-
 ifeq ($t, rp2040)
 BOARD := adafruit_feather_dvi
-FLASH := 8388608_2097152
+flash := 8388608_2097152
 TERMINAL_SPEED := 115200
 CPPFLAGS += -DHARDWARE_H=\"hw/adafruit_feather_dvi.h\"
 LIBRARIES += LittleFS PicoDVI Adafruit_GFX Adafruit_BusIO Wire
@@ -22,9 +16,8 @@ endif
 
 ifeq ($t, esp8266)
 BOARD := d1_mini
-BAUD := 921600
-EESZ := 4M
-F_CPU := 80
+baud := 921600
+eesz := 4M
 
 CPPFLAGS += -DUSER_SETUP_LOADED -DILI9341_DRIVER -DTFT_CS=PIN_D8 -DTFT_DC=PIN_D1 \
 	-DTFT_RST=-1 -DSPI_FREQUENCY=40000000 -DLOAD_GLCD \
@@ -33,14 +26,13 @@ LIBRARIES += TFT_eSPI
 endif
 
 ifeq ($t, esp32)
-UPLOADSPEED := 921600
+UploadSpeed := 921600
 LIBRARIES += Network
 
 ifeq ($b, lilygo)
 BOARD := ttgo-t7-v14-mini32
 SERIAL_PORT := /dev/ttyACM0
-CPPFLAGS += -DHARDWARE_H=\"hw/ttgo-t7-v14-mini32.h\"
-LIBRARIES += ESP32Lib WiFi
+LIBRARIES += ESP32Lib
 
 else
 BOARD := lolin32

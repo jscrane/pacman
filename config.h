@@ -16,6 +16,6 @@
 #define ORIENT		portrait
 #elif defined(USE_ESPI)
 #define ORIENT		reverse_portrait
-#elif defined(USE_VGA_FABGL) || defined(USE_VGA_BITLUNI) || defined(USE_DVI)
+#elif defined(USE_VGA) || defined(USE_DVI)
 #define ORIENT		landscape
 #endif

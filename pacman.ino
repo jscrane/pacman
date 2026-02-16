@@ -64,6 +64,7 @@ void setup(void) {
 	memory.put(io, 0x5000);
 
 	kbd.register_fnkey_handler(function_keys);
+	machine.register_pollable(kbd);
 
 	machine.register_reset_handler([](bool) {
 		kbd.reset();
@@ -74,8 +75,5 @@ void setup(void) {
 
 void loop(void) {
 
-	kbd.poll();
-
-	if (!io.paused())
-		machine.run();
+	machine.run(io.paused()? 0: CPU_INSTRUCTIONS);
 }
