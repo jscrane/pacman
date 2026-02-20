@@ -1,17 +1,16 @@
 t ?= esp32
 
 #TERMINAL_EXTRA_FLAGS := -C serialout.txt
-#CPPFLAGS = -DDEBUGGING=0x01
-CPPFLAGS += -DNO_STORAGE -DNO_SPIRAM
-LIBRARIES = SPI PS2KeyRaw SimpleTimer
+#CPPFLAGS = -DDEBUGGING=0x32
+CPPFLAGS += -DNO_STORAGE -DNO_SPIRAM -DUNDOCUMENTED_OPS
+LIBRARIES = SPI PS2KeyRaw SimpleTimer Adafruit_GFX Adafruit_BusIO Wire
 TERMINAL_SPEED := 115200
 
 ifeq ($t, rp2040)
 BOARD := adafruit_feather_dvi
 flash := 8388608_2097152
 TERMINAL_SPEED := 115200
-CPPFLAGS += -DHARDWARE_H=\"hw/adafruit_feather_dvi.h\"
-LIBRARIES += LittleFS PicoDVI Adafruit_GFX Adafruit_BusIO Wire
+LIBRARIES += LittleFS PicoDVI
 endif
 
 ifeq ($t, esp8266)

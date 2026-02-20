@@ -12,10 +12,4 @@
 #define PAUSE		0x29	// space
 #define ROTATE		0x2d	// r
 
-#if defined(USE_UTFT)
 #define ORIENT		portrait
-#elif defined(USE_ESPI)
-#define ORIENT		reverse_portrait
-#elif defined(USE_VGA) || defined(USE_DVI)
-#define ORIENT		landscape
-#endif
