@@ -33,13 +33,12 @@ void Screen::begin() {
 
 void Screen::draw_tile(uint16_t t, int x, int y) {
 
-	uint8_t tile = _tp[t];
-	const uint8_t *cdata = tiles + tile*64;
-	const uint16_t *palette = _palette565[_tp[t + 0x0400]];
+	const uint8_t pindex = _tp[t + 0x0400] & 0x1f;
+	const uint8_t *cdata = tiles + _tp[t] * 64;
 
 	for (int px = x; px < x+8; px++)
 		for (int py = y; py < y+8; py++) {
-			_display.drawPixel(px, py, palette[pgm_read_byte(cdata)]);
+			_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 			cdata++;
 		}
 }
@@ -74,7 +73,7 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 	int x = DISPLAY_WIDTH - sx + 15;
 	int y = DISPLAY_HEIGHT - sy - 16;
 
-	const uint16_t *palette = _palette565[_mem[0x4ff1 + off]];
+	const uint8_t pindex = _mem[0x4ff1 + off];
 	uint8_t sir = _mem[0x4ff0 + off];
 	const uint8_t *cdata = sprites + 256*(sir >> 2);
 
@@ -82,28 +81,28 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 	case 0: // no flip
 		for (int px = x; px < x+16; px++)
 			for (int py = y; py < y+16; py++) {
-				_display.drawPixel(px, py, palette[pgm_read_byte(cdata)]);
+				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
 	case 1: // flip y
 		for (int px = x; px < x+16; px++)
 			for (int py = y + 15; py >= y; py--) {
-				_display.drawPixel(px, py, palette[pgm_read_byte(cdata)]);
+				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
 	case 2: // flip x
 		for (int px = x+15; px >= x; px--)
 			for (int py = y; py < y+16; py++) {
-				_display.drawPixel(px, py, palette[pgm_read_byte(cdata)]);
+				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
 	case 3: // flip x and y
 		for (int px = x+15; px >= x; px--)
 			for (int py = y+15; py >= y; py--) {
-				_display.drawPixel(px, py, palette[pgm_read_byte(cdata)]);
+				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
