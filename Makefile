@@ -10,7 +10,7 @@ ifeq ($t, rp2040)
 BOARD := adafruit_feather_dvi
 flash := 8388608_2097152
 TERMINAL_SPEED := 115200
-LIBRARIES += LittleFS PicoDVI
+LIBRARIES += PicoDVI
 endif
 
 ifeq ($t, esp8266)
@@ -26,7 +26,6 @@ endif
 
 ifeq ($t, esp32)
 UploadSpeed := 921600
-LIBRARIES += Network
 
 ifeq ($b, lilygo)
 BOARD := ttgo-t7-v14-mini32
