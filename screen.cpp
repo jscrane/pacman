@@ -102,19 +102,24 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 			}
 		break;
 	}
+
 	if (sid >= 44 && sid <= 48) {
+		DBG_DSP("pacman at %d,%d flip=%d", x, y, sir & 0x03);
+
 		static int opx, opy;
 
-		DBG_DSP("pacman at %d,%d flip=%d", x, y, sir & 0x03);
-		if (abs(x - opx) > 1) {
-			_display.drawFastVLine(x+16, y, 16, BLACK);
-			_display.drawFastVLine(x-1, y, 16, BLACK);
-		}
-		if (abs(y - opy) > 1) {
-			_display.drawFastHLine(x, y+16, 16, BLACK);
-			_display.drawFastHLine(x, y-1, 16, BLACK);
-		}
+		int dx = x - opx;
+		if (dx > 1)
+			_display.drawFastVLine(x-1, y+2, 12, BLACK);
+		else if (dx < -1)
+			_display.drawFastVLine(x+16, y+2, 12, BLACK);
 		opx = x;
+
+		int dy = y - opy;
+		if (dy > 1)
+			_display.drawFastHLine(x+2, y-1, 12, BLACK);
+		else if (dy < -1)
+			_display.drawFastHLine(x+2, y+16, 12, BLACK);
 		opy = y;
 	}
 }
