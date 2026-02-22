@@ -83,7 +83,8 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 	case 0: // no flip
 		for (int px = x; px <= x+15; px++)
 			for (int py = y; py <= y+15; py++) {
-				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
+				if (px >= 0 && px <= 223)
+					_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
@@ -97,16 +98,30 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 	case 2: // flip x
 		for (int px = x+15; px >= x; px--)
 			for (int py = y; py <= y+15; py++) {
-				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
+				if (px >= 0 && px <= 223)
+					_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
-	case 3: // flip x,y
-		for (int px = x+15; px >= x; px--)
-			for (int py = y+15; py >= y; py--) {
-				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
-				cdata++;
-			}
-		break;
+	}
+
+	if (sid >= 44 && sid <= 48) {
+		DBG_DSP("pacman at %d,%d flip=%d", x, y, sir & 0x03);
+
+		static int opx, opy;
+
+		int dx = x - opx;
+		if (dx > 1)
+			_display.drawFastVLine(x-1, y+2, 12, BLACK);
+		else if (dx < -1)
+			_display.drawFastVLine(x+16, y+2, 12, BLACK);
+		opx = x;
+
+		int dy = y - opy;
+		if (dy > 1)
+			_display.drawFastHLine(x+2, y-1, 12, BLACK);
+		else if (dy < -1)
+			_display.drawFastHLine(x+2, y+16, 12, BLACK);
+		opy = y;
 	}
 }
