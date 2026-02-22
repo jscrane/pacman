@@ -101,12 +101,20 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 				cdata++;
 			}
 		break;
-	case 3: // flip x,y
-		for (int px = x+15; px >= x; px--)
-			for (int py = y+15; py >= y; py--) {
-				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
-				cdata++;
-			}
-		break;
+	}
+	if (sid >= 44 && sid <= 48) {
+		static int opx, opy;
+
+		DBG_DSP("pacman at %d,%d flip=%d", x, y, sir & 0x03);
+		if (abs(x - opx) > 1) {
+			_display.drawFastVLine(x+16, y, 16, BLACK);
+			_display.drawFastVLine(x-1, y, 16, BLACK);
+		}
+		if (abs(y - opy) > 1) {
+			_display.drawFastHLine(x, y+16, 16, BLACK);
+			_display.drawFastHLine(x, y-1, 16, BLACK);
+		}
+		opx = x;
+		opy = y;
 	}
 }
