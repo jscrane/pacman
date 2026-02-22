@@ -4,14 +4,14 @@
  */
 #include <stdarg.h>
 #include <r65emu.h>
-#include <z80.h>
+#include <uz80.h>
 
 #include "config.h"
 #include "screen.h"
 #include "io.h"
 
 Memory memory;
-z80 cpu(memory);
+uz80 cpu(memory);
 Arduino machine(cpu);
 ram<> pages[2];
 

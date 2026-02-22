@@ -34,7 +34,7 @@ public:
 	}
 };
 
-class Screen: public Display, public Memory::Device {
+class Screen: public Memory::Device {
 public:
 	Screen(Memory &mem): Memory::Device(sizeof(_tp)), _mem(mem) {}
 
@@ -49,7 +49,9 @@ private:
 	void draw_tile(uint16_t addr, int x, int y);
 
 	uint8_t _tp[2048];
-	Memory &_mem;
-};
+	uint16_t _palette565[32][4];
 
+	Memory &_mem;
+	Display _display;
+};
 #endif

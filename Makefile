@@ -2,7 +2,7 @@ t ?= esp32
 
 #TERMINAL_EXTRA_FLAGS := -C serialout.txt
 #CPPFLAGS = -DDEBUGGING=0x32
-CPPFLAGS += -DNO_STORAGE -DNO_SPIRAM -DUNDOCUMENTED_OPS
+CPPFLAGS += -DNO_STORAGE -DNO_SPIRAM
 LIBRARIES = SPI PS2KeyRaw SimpleTimer Adafruit_GFX Adafruit_BusIO Wire
 TERMINAL_SPEED := 115200
 
@@ -10,13 +10,15 @@ ifeq ($t, rp2040)
 BOARD := adafruit_feather_dvi
 flash := 8388608_2097152
 TERMINAL_SPEED := 115200
-LIBRARIES += LittleFS PicoDVI
+LIBRARIES += PicoDVI
 endif
 
 ifeq ($t, esp8266)
 BOARD := d1_mini
 baud := 921600
 eesz := 4M
+#dbg := Serial
+#lvl := COREWIFIHTTP_UPDATEUPDATEROTAOOMMDNSHWDT_NOEXTRA4K
 
 CPPFLAGS += -DUSER_SETUP_LOADED -DILI9341_DRIVER -DTFT_CS=PIN_D8 -DTFT_DC=PIN_D1 \
 	-DTFT_RST=-1 -DSPI_FREQUENCY=40000000 -DLOAD_GLCD \
@@ -26,7 +28,6 @@ endif
 
 ifeq ($t, esp32)
 UploadSpeed := 921600
-LIBRARIES += Network
 
 ifeq ($b, lilygo)
 BOARD := ttgo-t7-v14-mini32
