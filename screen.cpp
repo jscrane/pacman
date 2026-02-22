@@ -83,7 +83,8 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 	case 0: // no flip
 		for (int px = x; px <= x+15; px++)
 			for (int py = y; py <= y+15; py++) {
-				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
+				if (px >= 0 && px <= 223)
+					_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
@@ -97,7 +98,8 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 	case 2: // flip x
 		for (int px = x+15; px >= x; px--)
 			for (int py = y; py <= y+15; py++) {
-				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
+				if (px >= 0 && px <= 223)
+					_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
