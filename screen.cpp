@@ -1,8 +1,9 @@
 #include <Arduino.h>
 #include <machine.h>
 #include <memory.h>
-#include <display.h>
 #include <hardware.h>
+#include <debugging.h>
+#include <display.h>
 
 #include "config.h"
 #include "screen.h"
@@ -20,7 +21,7 @@ static void get_palette(palette_entry &p, uint8_t index) {
 
 void Screen::begin() {
 
-	_display.begin(BLACK, WHITE, ORIENT, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+	_display.begin(BLACK, WHITE, ORIENT, DISPLAY_WIDTH, DISPLAY_HEIGHT, CENTER_ALL);
 	_display.clear();
 
 	for (int i = 0; i < 32; i++) {
@@ -75,31 +76,32 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 
 	const uint8_t pindex = _mem[0x4ff1 + off];
 	uint8_t sir = _mem[0x4ff0 + off];
-	const uint8_t *cdata = sprites + 256*(sir >> 2);
+	uint16_t sid = sir >> 2;
+	const uint8_t *cdata = sprites + (sid << 8);
 
 	switch (sir & 0x03) {
 	case 0: // no flip
-		for (int px = x; px < x+16; px++)
-			for (int py = y; py < y+16; py++) {
+		for (int px = x; px <= x+15; px++)
+			for (int py = y; py <= y+15; py++) {
 				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
 	case 1: // flip y
-		for (int px = x; px < x+16; px++)
-			for (int py = y + 15; py >= y; py--) {
+		for (int px = x; px <= x+15; px++)
+			for (int py = y+15; py >= y; py--) {
 				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
 	case 2: // flip x
 		for (int px = x+15; px >= x; px--)
-			for (int py = y; py < y+16; py++) {
+			for (int py = y; py <= y+15; py++) {
 				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
-	case 3: // flip x and y
+	case 3: // flip x,y
 		for (int px = x+15; px >= x; px--)
 			for (int py = y+15; py >= y; py--) {
 				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
