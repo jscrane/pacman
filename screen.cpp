@@ -21,8 +21,8 @@ static void get_palette(palette_entry &p, uint8_t index) {
 
 void Screen::begin() {
 
-	_display.begin(BLACK, WHITE, ORIENT, DISPLAY_WIDTH, DISPLAY_HEIGHT, CENTER_ALL);
-	_display.clear();
+	Display::begin(BLACK, WHITE, ORIENT, DISPLAY_WIDTH, DISPLAY_HEIGHT, CENTER_ALL);
+	Display::clear();
 
 	for (int i = 0; i < 32; i++) {
 		palette_entry p;
@@ -39,7 +39,7 @@ void Screen::draw_tile(uint16_t t, int x, int y) {
 
 	for (int px = x; px < x+8; px++)
 		for (int py = y; py < y+8; py++) {
-			_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
+			Display::drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 			cdata++;
 		}
 }
@@ -84,14 +84,14 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 		for (int px = x; px <= x+15; px++)
 			for (int py = y; py <= y+15; py++) {
 				if (px >= 0 && px <= 223)
-					_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
+					Display::drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
 	case 1: // flip y
 		for (int px = x; px <= x+15; px++)
 			for (int py = y+15; py >= y; py--) {
-				_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
+				Display::drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
@@ -99,7 +99,7 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 		for (int px = x+15; px >= x; px--)
 			for (int py = y; py <= y+15; py++) {
 				if (px >= 0 && px <= 223)
-					_display.drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
+					Display::drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
@@ -112,16 +112,16 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 
 		int dx = x - opx;
 		if (dx > 1)
-			_display.drawFastVLine(x-1, y+2, 12, BLACK);
+			Display::drawFastVLine(x-1, y+2, 12, BLACK);
 		else if (dx < -1)
-			_display.drawFastVLine(x+16, y+2, 12, BLACK);
+			Display::drawFastVLine(x+16, y+2, 12, BLACK);
 		opx = x;
 
 		int dy = y - opy;
 		if (dy > 1)
-			_display.drawFastHLine(x+2, y-1, 12, BLACK);
+			Display::drawFastHLine(x+2, y-1, 12, BLACK);
 		else if (dy < -1)
-			_display.drawFastHLine(x+2, y+16, 12, BLACK);
+			Display::drawFastHLine(x+2, y+16, 12, BLACK);
 		opy = y;
 	}
 }
