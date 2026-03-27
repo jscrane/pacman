@@ -34,9 +34,6 @@ static void function_keys(uint8_t key) {
 	case 1:
 		machine.reset();
 		break;
-	case 10:
-		machine.debug_cpu();
-		break;
 	}
 }
 
