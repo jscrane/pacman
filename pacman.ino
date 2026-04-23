@@ -48,7 +48,7 @@ void setup(void) {
 
 	machine.begin();
 
-	machine.interval_timer(16, []() { cpu.irq(vec); });
+	machine.interval_timer(1000000 / 60, []() { cpu.irq(vec); });
 
 	memory.put(e6, 0x0000);
 	memory.put(f6, 0x1000);
@@ -72,5 +72,5 @@ void setup(void) {
 
 void loop(void) {
 
-	machine.run(io.paused()? 0: CPU_INSTRUCTIONS);
+	machine.run(io.paused()? CLK_STOPPED: CLK_SPEED_HZ);
 }

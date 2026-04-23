@@ -3,7 +3,7 @@ t ?= esp32
 #TERMINAL_EXTRA_FLAGS := -C serialout.txt
 #CPPFLAGS = -DDEBUGGING=0x32
 CPPFLAGS += -DNO_STORAGE -DNO_SPIRAM
-LIBRARIES = SPI PS2KeyRaw SimpleTimer Adafruit_GFX Adafruit_BusIO Wire
+LIBRARIES = SPI PS2KeyRaw Adafruit_GFX Adafruit_BusIO Wire
 TERMINAL_SPEED := 115200
 
 ifeq ($t, rp2040)

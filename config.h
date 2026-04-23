@@ -13,3 +13,5 @@
 #define ROTATE		0x2d	// r
 
 #define ORIENT		portrait
+
+#define CLK_SPEED_HZ	3072000
