@@ -109,3 +109,17 @@ IO::operator uint8_t() {
 			ONE_LIFE_PER_GAME | ONE_COIN_ONE_GAME;
 	return 0x00;
 }
+
+void IO::checkpoint(Checkpoint &c) {
+	c.write(_sx);
+	c.write(_int_enabled);
+	c.write(_sound_enabled);
+	c.write(_screen_flipped);
+}
+
+void IO::restore(Checkpoint &c) {
+	c.read(_sx);
+	c.read(_int_enabled);
+	c.read(_sound_enabled);
+	c.read(_screen_flipped);
+}

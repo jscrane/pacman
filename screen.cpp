@@ -125,3 +125,17 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 		opy = y;
 	}
 }
+
+void Screen::checkpoint(Checkpoint &c) {
+	c.write(_tp, sizeof(_tp));
+}
+
+void Screen::restore(Checkpoint &c) {
+	c.read(_tp, sizeof(_tp));
+}
+
+void Screen::redraw() {
+	Display::clear();
+	for (unsigned i = 0; i < sizeof(_tp); i++)
+		_set(i, _tp[i]);
+}

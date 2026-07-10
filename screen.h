@@ -1,5 +1,4 @@
-#ifndef __SCREEN_H__
-#define __SCREEN_H__
+#pragma once
 
 #define DISPLAY_WIDTH	224
 #define DISPLAY_HEIGHT	288
@@ -38,8 +37,12 @@ class Screen: public Display, public Memory::Device {
 public:
 	Screen(Memory &mem): Memory::Device(sizeof(_tp)), _mem(mem) {}
 
-	virtual void operator=(uint8_t b) { if (_tp[_acc] != b) _set(_acc, b); }
-	virtual operator uint8_t() { return _tp[_acc]; }
+	void operator=(uint8_t b) override { if (_tp[_acc] != b) _set(_acc, b); }
+	operator uint8_t() override { return _tp[_acc]; }
+
+	void checkpoint(Checkpoint &) override;
+	void restore(Checkpoint &) override;
+	void redraw();
 
 	void begin();
 	void set_sprite(uint16_t off, uint8_t sx, uint8_t sy);
@@ -53,4 +56,3 @@ private:
 
 	Memory &_mem;
 };
-#endif

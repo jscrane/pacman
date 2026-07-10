@@ -29,15 +29,11 @@ Screen screen(memory);
 IO io(screen);
 ps2_raw_kbd kbd(io);
 
-static void function_keys(uint8_t key) {
-	switch (key) {
-	case 1:
-		machine.reset();
-		break;
-	}
-}
-
 void setup(void) {
+
+#if DEBUGGING == DEBUG_NONE
+	Serial.begin(TERMINAL_SPEED);
+#endif
 
 	static uint8_t vec;
 
@@ -60,7 +56,22 @@ void setup(void) {
 	memory.put(pages[1], 0x4c00);
 	memory.put(io, 0x5000);
 
-	kbd.register_fnkey_handler(function_keys);
+	kbd.register_fnkey_handler([](uint8_t fn) {
+		switch (fn) {
+		case 1:
+			machine.reset();
+			break;
+		case 6:
+			serial_checkpoint(Serial);
+			break;
+		case 7:
+			serial_restore(Serial);
+			io.pause();
+			screen.redraw();
+			break;
+		}
+	});
+
 	machine.register_pollable(kbd);
 
 	machine.register_reset_handler([](bool) {
