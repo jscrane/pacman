@@ -1,5 +1,4 @@
-#ifndef __IO_H__
-#define __IO_H__
+#pragma once
 
 #define INT_ENABLE	0x00
 #define SOUND_ENABLE	0x01
@@ -48,16 +47,20 @@ public:
 		_coin = _p1_start = _p2_start = true;
 	}
 
-	void operator=(uint8_t);
-	operator uint8_t();
+	void operator=(uint8_t) override;
+	operator uint8_t() override;
+
+	void checkpoint(Checkpoint &) override;
+	void restore(Checkpoint &) override;
 
 	void down(uint8_t key);
 	void up(uint8_t key);
 
-	bool int_enabled() { return _int_enabled; }
-	bool sound_enabled() { return _sound_enabled; }
-	bool screen_flipped() { return _screen_flipped; }
-	bool paused() { return _paused; }
+	bool int_enabled() const { return _int_enabled; }
+	bool sound_enabled() const { return _sound_enabled; }
+	bool screen_flipped() const { return _screen_flipped; }
+	bool paused() const { return _paused; }
+	void pause() { _paused = true; }
 
 private:
 	uint8_t _sx;
@@ -67,5 +70,3 @@ private:
 
 	Screen &_screen;
 };
-
-#endif
