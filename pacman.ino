@@ -56,8 +56,8 @@ void setup(void) {
 	memory.put(pages[1], 0x4c00);
 	memory.put(io, 0x5000);
 
-	kbd.register_fnkey_handler([](uint8_t key) {
-		switch (key) {
+	kbd.register_fnkey_handler([](uint8_t fn) {
+		switch (fn) {
 		case 1:
 			machine.reset();
 			break;
@@ -67,6 +67,7 @@ void setup(void) {
 		case 7:
 			serial_restore(Serial);
 			io.pause();
+			screen.redraw();
 			break;
 		}
 	});

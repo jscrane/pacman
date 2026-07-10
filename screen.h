@@ -42,6 +42,7 @@ public:
 
 	void checkpoint(Checkpoint &) override;
 	void restore(Checkpoint &) override;
+	void redraw();
 
 	void begin();
 	void set_sprite(uint16_t off, uint8_t sx, uint8_t sy);
