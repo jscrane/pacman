@@ -21,3 +21,6 @@ This emulation requires a PS/2 keyboard:
 - 3: Coin
 - Arrow keys: Up, down, left, right
 - Space: Pause
+- F1: Reset
+- F6: Checkpoint (to Serial Port)
+- F7: Restore (from Serial Port)
