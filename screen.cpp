@@ -70,11 +70,19 @@ void Screen::_set(uint16_t a, uint8_t b) {
 		_grid[y][x] = a;
 }
 
-void Screen::_erase_sprite(int ox, int oy) {
+void Screen::_erase_sprite(int ox, int oy, int nx, int ny) {
 	for (int row = oy/8; row <= (oy+15)/8; row++)
-		for (int col = ox/8; col <= (ox+15)/8; col++)
-			if (row >= 0 && row < TILE_ROWS && col >= 0 && col < TILE_COLS && _grid[row][col] != 0xffff)
-				draw_tile(_grid[row][col], 8*col, 8*row);
+		for (int col = ox/8; col <= (ox+15)/8; col++) {
+			if (row < 0 || row >= TILE_ROWS || col < 0 || col >= TILE_COLS)
+				continue;
+			int cx = col*8, cy = row*8;
+			// skip cells the sprite's new position will draw over anyway
+			bool covered = (cx < nx+16 && cx+8 > nx && cy < ny+16 && cy+8 > ny);
+			if (!covered && _grid[row][col] != 0xffff) {
+				draw_tile(_grid[row][col], cx, cy);
+				_machine->yield();
+			}
+		}
 }
 
 void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
@@ -84,7 +92,7 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 
 	// fold the 16-slot I/O mirror (SPRITE_LEN=0x20) onto the 8 real sprites
 	uint8_t slot = (off/2) % NUM_SPRITES;
-	_erase_sprite(_spr_x[slot], _spr_y[slot]);
+	_erase_sprite(_spr_x[slot], _spr_y[slot], x, y);
 	_spr_x[slot] = x;
 	_spr_y[slot] = y;
 
@@ -119,6 +127,7 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 			}
 		break;
 	}
+	_machine->yield();
 }
 
 void Screen::checkpoint(Checkpoint &c) {
@@ -139,6 +148,9 @@ void Screen::restore(Checkpoint &c) {
 
 void Screen::redraw() {
 	Display::clear();
-	for (unsigned i = 0; i < sizeof(_tp); i++)
+	for (unsigned i = 0; i < sizeof(_tp); i++) {
 		_set(i, _tp[i]);
+		if ((i & 0x3f) == 0)
+			_machine->yield();
+	}
 }

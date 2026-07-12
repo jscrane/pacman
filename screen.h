@@ -41,7 +41,7 @@ class Screen: public Display, public Memory::Device {
 public:
 	Screen(Memory &mem): Memory::Device(sizeof(_tp)), _mem(mem) {
 		for (int i = 0; i < NUM_SPRITES; i++)
-			_spr_x[i] = _spr_y[i] = -100;		// sentinel: nothing drawn there yet
+			_spr_x[i] = _spr_y[i] = -100;	// sentinel: nothing drawn there yet
 		for (int y = 0; y < TILE_ROWS; y++)
 			for (int x = 0; x < TILE_COLS; x++)
 				_grid[y][x] = 0xffff;		// sentinel: no tile mapped to this cell yet
@@ -60,11 +60,11 @@ public:
 private:
 	void _set(uint16_t a, uint8_t b);
 	void draw_tile(uint16_t addr, int x, int y);
-	void _erase_sprite(int x, int y);
+	void _erase_sprite(int ox, int oy, int nx, int ny);
 
 	uint8_t _tp[2048];
 	uint16_t _palette565[32][4];
-	uint16_t _grid[TILE_ROWS][TILE_COLS];			// tile-RAM address occupying each screen cell
+	uint16_t _grid[TILE_ROWS][TILE_COLS];		// tile-RAM address occupying each screen cell
 	int16_t _spr_x[NUM_SPRITES], _spr_y[NUM_SPRITES];	// previous screen position per sprite slot
 
 	Memory &_mem;
