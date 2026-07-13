@@ -61,9 +61,12 @@ public:
 	bool screen_flipped() const { return _screen_flipped; }
 	bool paused() const { return _paused; }
 	void pause() { _paused = true; }
+	uint8_t vec() const { return _vec; }
+	void vec(uint8_t b) { _vec = b; }
 
 private:
 	uint8_t _sx;
+	uint8_t _vec;
 
 	bool _up, _down, _left, _right, _coin, _p1_start, _p2_start;
 	bool _int_enabled, _sound_enabled, _screen_flipped, _paused;

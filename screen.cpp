@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include <machine.h>
 #include <memory.h>
 #include <hardware.h>
@@ -67,12 +66,35 @@ void Screen::_set(uint16_t a, uint8_t b) {
 		y = 1;
 	}
 	draw_tile(a, 8*x, 8*y);
+	if (y >= 0 && y < TILE_ROWS && x >= 0 && x < TILE_COLS)
+		_grid[y][x] = a;
+}
+
+void Screen::_erase_sprite(int ox, int oy, int nx, int ny) {
+	for (int row = oy/8; row <= (oy+15)/8; row++)
+		for (int col = ox/8; col <= (ox+15)/8; col++) {
+			if (row < 0 || row >= TILE_ROWS || col < 0 || col >= TILE_COLS)
+				continue;
+			int cx = col*8, cy = row*8;
+			// skip cells the sprite's new position will draw over anyway
+			bool covered = (cx < nx+16 && cx+8 > nx && cy < ny+16 && cy+8 > ny);
+			if (!covered && _grid[row][col] != 0xffff) {
+				draw_tile(_grid[row][col], cx, cy);
+				_machine->yield();
+			}
+		}
 }
 
 void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 
 	int x = DISPLAY_WIDTH - sx + 15;
 	int y = DISPLAY_HEIGHT - sy - 16;
+
+	// fold the 16-slot I/O mirror (SPRITE_LEN=0x20) onto the 8 real sprites
+	uint8_t slot = (off/2) % NUM_SPRITES;
+	_erase_sprite(_spr_x[slot], _spr_y[slot], x, y);
+	_spr_x[slot] = x;
+	_spr_y[slot] = y;
 
 	const uint8_t pindex = _mem[0x4ff1 + off];
 	uint8_t sir = _mem[0x4ff0 + off];
@@ -83,7 +105,7 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 	case 0: // no flip
 		for (int px = x; px <= x+15; px++)
 			for (int py = y; py <= y+15; py++) {
-				if (px >= 0 && px <= 223)
+				if (px >= 0 && px < DISPLAY_WIDTH)
 					Display::drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
@@ -91,51 +113,44 @@ void Screen::set_sprite(uint16_t off, uint8_t sx, uint8_t sy) {
 	case 1: // flip y
 		for (int px = x; px <= x+15; px++)
 			for (int py = y+15; py >= y; py--) {
-				Display::drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
+				if (px >= 0 && px < DISPLAY_WIDTH)
+					Display::drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
 	case 2: // flip x
 		for (int px = x+15; px >= x; px--)
 			for (int py = y; py <= y+15; py++) {
-				if (px >= 0 && px <= 223)
+				if (px >= 0 && px < DISPLAY_WIDTH)
 					Display::drawPixel(px, py, _palette565[pindex][pgm_read_byte(cdata)]);
 				cdata++;
 			}
 		break;
 	}
-
-	if (sid >= 44 && sid <= 48) {
-		DBG_DSP("pacman at %d,%d flip=%d", x, y, sir & 0x03);
-
-		static int opx, opy;
-
-		int dx = x - opx;
-		if (dx > 1)
-			Display::drawFastVLine(x-1, y+2, 12, BLACK);
-		else if (dx < -1)
-			Display::drawFastVLine(x+16, y+2, 12, BLACK);
-		opx = x;
-
-		int dy = y - opy;
-		if (dy > 1)
-			Display::drawFastHLine(x+2, y-1, 12, BLACK);
-		else if (dy < -1)
-			Display::drawFastHLine(x+2, y+16, 12, BLACK);
-		opy = y;
-	}
+	_machine->yield();
 }
 
 void Screen::checkpoint(Checkpoint &c) {
 	c.write(_tp, sizeof(_tp));
+	for (unsigned i = 0; i < NUM_SPRITES; i++) {
+		c.write((uint16_t)_spr_x[i]);
+		c.write((uint16_t)_spr_y[i]);
+	}
 }
 
 void Screen::restore(Checkpoint &c) {
 	c.read(_tp, sizeof(_tp));
+	for (unsigned i = 0; i < NUM_SPRITES; i++) {
+		c.read((uint16_t &)_spr_x[i]);
+		c.read((uint16_t &)_spr_y[i]);
+	}
 }
 
 void Screen::redraw() {
 	Display::clear();
-	for (unsigned i = 0; i < sizeof(_tp); i++)
+	for (unsigned i = 0; i < sizeof(_tp); i++) {
 		_set(i, _tp[i]);
+		if ((i & 0x3f) == 0)
+			_machine->yield();
+	}
 }
