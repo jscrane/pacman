@@ -35,16 +35,14 @@ void setup(void) {
 	Serial.begin(TERMINAL_SPEED);
 #endif
 
-	static uint8_t vec;
-
 	cpu.set_port_out_handler([](uint16_t p, uint8_t b) {
 		if ((p & 0xff) == 0x0000)
-			vec = b;
+			io.vec(b);
 	});
 
 	machine.begin();
 
-	machine.interval_timer(1000000 / 60, []() { cpu.irq(vec); });
+	machine.interval_timer(1000000 / 60, []() { cpu.irq(io.vec()); });
 
 	memory.put(e6, 0x0000);
 	memory.put(f6, 0x1000);

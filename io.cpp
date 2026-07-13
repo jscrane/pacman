@@ -115,6 +115,7 @@ void IO::checkpoint(Checkpoint &c) {
 	c.write(_int_enabled);
 	c.write(_sound_enabled);
 	c.write(_screen_flipped);
+	c.write(_vec);
 }
 
 void IO::restore(Checkpoint &c) {
@@ -122,4 +123,5 @@ void IO::restore(Checkpoint &c) {
 	c.read(_int_enabled);
 	c.read(_sound_enabled);
 	c.read(_screen_flipped);
+	c.read(_vec);
 }
