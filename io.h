@@ -1,51 +1,11 @@
 #pragma once
 
-#define INT_ENABLE	0x00
-#define SOUND_ENABLE	0x01
-#define FLIP_SCREEN	0x03
-#define ONE_PLAYER_START	0x04
-#define TWO_PLAYER_START	0x05
-#define COIN_LOCKOUT	0x06
-#define COIN_COUNTER	0x07
+class Screen;
+class Inputs;
 
-#define SOUND_START	0x40
-#define SOUND_LEN	0x20
-#define SPRITE_START	0x60
-#define SPRITE_LEN	0x20
-#define WATCHDOG	0xc0
-
-#define INPUTS_0	0x00
-#define INPUTS_1	0x40
-#define DIP_1		0x80
-#define DIP_2		0xc0
-
-#define FREE_PLAY		0b00000000
-#define ONE_COIN_ONE_GAME	0b00000001
-#define ONE_COIN_TWO_GAMES	0b00000010
-#define TWO_COINS_ONE_GAME	0b00000011
-
-#define ONE_LIFE_PER_GAME	0b00000000
-#define TWO_LIVES_PER_GAME	0b00000100
-#define THREE_LIVES_PER_GAME	0b00001000
-#define FIVE_LIVES_PER_GAME	0b00001100
-
-#define BONUS_AT_10000		0b00000000
-#define BONUS_AT_15000		0b00010000
-#define BONUS_AT_20000		0b00100000
-#define NO_BONUS		0b00110000
-
-#define DIFFICULTY_HARD		0b00000000
-#define DIFFICULTY_NORMAL	0b01000000
-
-#define ALTERNATE_NAMES		0b00000000
-#define NORMAL_NAMES		0b10000000
-
-class IO: public Memory::Device, public matrix_keyboard {
+class IO: public Memory::Device {
 public:
-	IO(Screen &screen): Memory::Device(256), _screen(screen) {
-		_up = _down = _left = _right = true;
-		_coin = _p1_start = _p2_start = true;
-	}
+	IO(Screen &screen, Inputs &inputs): Memory::Device(256), _screen(screen), _inputs(inputs) {}
 
 	void operator=(uint8_t) override;
 	operator uint8_t() override;
@@ -53,14 +13,9 @@ public:
 	void checkpoint(Checkpoint &) override;
 	void restore(Checkpoint &) override;
 
-	void down(uint8_t key);
-	void up(uint8_t key);
-
 	bool int_enabled() const { return _int_enabled; }
 	bool sound_enabled() const { return _sound_enabled; }
 	bool screen_flipped() const { return _screen_flipped; }
-	bool paused() const { return _paused; }
-	void pause() { _paused = true; }
 	uint8_t vec() const { return _vec; }
 	void vec(uint8_t b) { _vec = b; }
 
@@ -68,8 +23,8 @@ private:
 	uint8_t _sx;
 	uint8_t _vec;
 
-	bool _up, _down, _left, _right, _coin, _p1_start, _p2_start;
-	bool _int_enabled, _sound_enabled, _screen_flipped, _paused;
+	bool _int_enabled, _sound_enabled, _screen_flipped;
 
 	Screen &_screen;
+	Inputs &_inputs;
 };

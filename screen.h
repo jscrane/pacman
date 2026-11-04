@@ -1,5 +1,7 @@
 #pragma once
 
+#include <display.h>
+
 #define DISPLAY_WIDTH	224
 #define DISPLAY_HEIGHT	288
 

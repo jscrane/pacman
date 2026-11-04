@@ -5,9 +5,12 @@
 #include <stdarg.h>
 #include <r65emu.h>
 #include <z80.h>
+#include <keys.h>
+#include <serial_checkpoint.h>
 
 #include "config.h"
 #include "screen.h"
+#include "kbd_inputs.h"
 #include "io.h"
 
 Memory memory;
@@ -25,15 +28,12 @@ prom f6(rom6f, sizeof(rom6f));
 prom h6(rom6h, sizeof(rom6h));
 prom j6(rom6j, sizeof(rom6j));
 
+KbdInputs inputs;
+ps2_raw_kbd kbd(inputs);
 Screen screen(memory);
-IO io(screen);
-ps2_raw_kbd kbd(io);
+IO io(screen, inputs);
 
 void setup(void) {
-
-#if DEBUGGING == DEBUG_NONE
-	Serial.begin(TERMINAL_SPEED);
-#endif
 
 	cpu.set_port_out_handler([](uint16_t p, uint8_t b) {
 		if ((p & 0xff) == 0x0000)
@@ -54,17 +54,18 @@ void setup(void) {
 	memory.put(pages[1], 0x4c00);
 	memory.put(io, 0x5000);
 
-	kbd.register_fnkey_handler([](uint8_t fn) {
+	kbd.begin();
+	kbd.register_fnkey_handler([](uint16_t fn) {
 		switch (fn) {
-		case 1:
+		case F1:
 			machine.reset();
 			break;
-		case 6:
+		case F6:
 			serial_checkpoint(Serial);
 			break;
-		case 7:
+		case F7:
 			serial_restore(Serial);
-			io.pause();
+			inputs.pause();
 			screen.redraw();
 			break;
 		}
@@ -74,6 +75,7 @@ void setup(void) {
 
 	machine.register_reset_handler([](bool) {
 		kbd.reset();
+		inputs.reset();
 		screen.begin();
 	});
 	machine.reset();
@@ -81,5 +83,5 @@ void setup(void) {
 
 void loop(void) {
 
-	machine.run(io.paused()? CLK_STOPPED: CLK_SPEED_HZ);
+	machine.run(inputs.is_paused()? CLK_STOPPED: CLK_SPEED_HZ);
 }

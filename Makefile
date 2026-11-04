@@ -33,6 +33,7 @@ UploadSpeed := 921600
 ifeq ($b, lilygo)
 BOARD := ttgo-t7-v14-mini32
 SERIAL_PORT := /dev/ttyACM0
+CPPFLAGS += -DVGA_RESOLUTION=VGA_400x300
 LIBRARIES += ESP32Lib
 
 else

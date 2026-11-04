@@ -1,17 +1,29 @@
 #pragma once
 
-#define P1_START	0x16	// 1
-#define P2_START	0x1e	// 2
-#define COIN		0x26	// 3
-
-#define KEY_LEFT	0x6b	// keypad #4
-#define KEY_RIGHT	0x74	// keypad #6
-#define KEY_UP		0x75	// keypad #8
-#define KEY_DOWN	0x72	// keypad #2
-
-#define PAUSE		0x29	// space
-#define ROTATE		0x2d	// r
-
 #define ORIENT		portrait
 
 #define CLK_SPEED_HZ	3072000
+
+// dip switches
+#define FREE_PLAY		0b00000000
+#define ONE_COIN_ONE_GAME	0b00000001
+#define ONE_COIN_TWO_GAMES	0b00000010
+#define TWO_COINS_ONE_GAME	0b00000011
+
+#define ONE_LIFE_PER_GAME	0b00000000
+#define TWO_LIVES_PER_GAME	0b00000100
+#define THREE_LIVES_PER_GAME	0b00001000
+#define FIVE_LIVES_PER_GAME	0b00001100
+
+#define BONUS_AT_10000		0b00000000
+#define BONUS_AT_15000		0b00010000
+#define BONUS_AT_20000		0b00100000
+#define NO_BONUS		0b00110000
+
+#define DIFFICULTY_HARD		0b00000000
+#define DIFFICULTY_NORMAL	0b01000000
+
+#define ALTERNATE_NAMES		0b00000000
+#define NORMAL_NAMES		0b10000000
+
+#define DIP_SWITCHES		NORMAL_NAMES | DIFFICULTY_NORMAL | BONUS_AT_20000 | ONE_LIFE_PER_GAME | ONE_COIN_ONE_GAME;

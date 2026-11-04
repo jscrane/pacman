@@ -2,66 +2,28 @@
 #include <r65emu.h>
 
 #include "screen.h"
+#include "inputs.h"
 #include "io.h"
 #include "config.h"
 
-void IO::down(uint8_t key) {
-	switch (key) {
-	case KEY_UP:
-		_up = false;
-		break;
-	case KEY_DOWN:
-		_down = false;
-		break;
-	case KEY_LEFT:
-		_left = false;
-		break;
-	case KEY_RIGHT:
-		_right = false;
-		break;
-	case P1_START:
-		_p1_start = false;
-		break;
-	case P2_START:
-		_p2_start = false;
-		break;
-	case COIN:
-		_coin = false;
-		break;
-	}
-}
+#define INT_ENABLE	0x00
+#define SOUND_ENABLE	0x01
+#define FLIP_SCREEN	0x03
+#define ONE_PLAYER_START	0x04
+#define TWO_PLAYER_START	0x05
+#define COIN_LOCKOUT	0x06
+#define COIN_COUNTER	0x07
 
-void IO::up(uint8_t key) {
-	switch (key) {
-	case KEY_UP:
-		_up = true;
-		break;
-	case KEY_DOWN:
-		_down = true;
-		break;
-	case KEY_LEFT:
-		_left = true;
-		break;
-	case KEY_RIGHT:
-		_right = true;
-		break;
-	case P1_START:
-		_p1_start = true;
-		break;
-	case P2_START:
-		_p2_start = true;
-		break;
-	case COIN:
-		_coin = true;
-		break;
-	case PAUSE:
-		_paused = !_paused;
-		break;
-	case ROTATE:
-		_screen_flipped = !_screen_flipped;
-		break;
-	}
-}
+#define SOUND_START	0x40
+#define SOUND_LEN	0x20
+#define SPRITE_START	0x60
+#define SPRITE_LEN	0x20
+#define WATCHDOG	0xc0
+
+#define INPUTS_0	0x00
+#define INPUTS_1	0x40
+#define DIP_1		0x80
+#define DIP_2		0xc0
 
 void IO::operator=(uint8_t b) {
 	if (_acc >= SPRITE_START && _acc < SPRITE_START + SPRITE_LEN) {
@@ -85,29 +47,16 @@ void IO::operator=(uint8_t b) {
 }
 
 IO::operator uint8_t() {
-	if (_acc >= INPUTS_0 && _acc < INPUTS_1) {
-		uint8_t v = 0x10;
-		if (_up) v |= 0x01;
-		if (_left) v |= 0x02;
-		if (_right) v |= 0x04;
-		if (_down) v |= 0x08;
-		if (_coin) v |= 0x20;
-		return v;
-	}
-	if (_acc >= INPUTS_1 && _acc < DIP_1) {
-		uint8_t v = 0x10;
-		if (_up) v |= 0x01;
-		if (_left) v |= 0x02;
-		if (_right) v |= 0x04;
-		if (_down) v |= 0x08;
-		if (_p1_start) v |= 0x20;
-		if (_p2_start) v |= 0x40;
-		return v;
-	}
+	if (_acc >= INPUTS_0 && _acc < INPUTS_1)
+		return _inputs.read_input0();
+
+	if (_acc >= INPUTS_1 && _acc < DIP_1)
+		return _inputs.read_input1();
+
 	if (_acc >= DIP_1)
-		return NORMAL_NAMES | DIFFICULTY_NORMAL | BONUS_AT_20000 |
-			ONE_LIFE_PER_GAME | ONE_COIN_ONE_GAME;
-	return 0x00;
+		return DIP_SWITCHES;
+
+	return 0;
 }
 
 void IO::checkpoint(Checkpoint &c) {
