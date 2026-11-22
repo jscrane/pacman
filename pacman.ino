@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include "screen.h"
-#include "kbd_inputs.h"
+#include "kbd_switches.h"
 #include "io.h"
 
 Memory memory;
@@ -28,10 +28,10 @@ prom f6(rom6f, sizeof(rom6f));
 prom h6(rom6h, sizeof(rom6h));
 prom j6(rom6j, sizeof(rom6j));
 
-KbdInputs inputs;
-ps2_raw_kbd kbd(inputs);
+KbdSwitches switches;
+ps2_raw_kbd kbd(switches);
 Screen screen(memory);
-IO io(screen, inputs);
+IO io(screen, switches);
 
 void setup(void) {
 
@@ -65,7 +65,7 @@ void setup(void) {
 			break;
 		case F7:
 			serial_restore(Serial);
-			inputs.pause();
+			switches.pause();
 			screen.redraw();
 			break;
 		}
@@ -75,7 +75,7 @@ void setup(void) {
 
 	machine.register_reset_handler([](bool) {
 		kbd.reset();
-		inputs.reset();
+		switches.reset();
 		screen.begin();
 	});
 	machine.reset();
@@ -83,5 +83,5 @@ void setup(void) {
 
 void loop(void) {
 
-	machine.run(inputs.is_paused()? CLK_STOPPED: CLK_SPEED_HZ);
+	machine.run(switches.is_paused()? CLK_STOPPED: CLK_SPEED_HZ);
 }

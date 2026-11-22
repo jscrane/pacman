@@ -2,10 +2,9 @@
 
 #include <cstdint>
 
-class Inputs {
+class Switches {
 public:
-	
-	uint8_t read_input0() const {
+	uint8_t in0() const {
 		uint8_t v = 0x10;
 		if (_up) v |= 0x01;
 		if (_left) v |= 0x02;
@@ -15,7 +14,7 @@ public:
 		return v;
 	}
 
-	uint8_t read_input1() const {
+	uint8_t in1() const {
 		uint8_t v = 0x10;
 		if (_up) v |= 0x01;
 		if (_left) v |= 0x02;
@@ -31,9 +30,9 @@ public:
 	void pause() { _paused = true; }
 
 protected:
-	Inputs() { reset(); }
+	Switches() { release_all(); }
 
-	void reset() {
+	void release_all() {
 		_up = _down = _left = _right = true;
 		_coin = _p1_start = _p2_start = true;
 		_paused = false;

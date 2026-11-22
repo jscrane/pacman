@@ -1,11 +1,11 @@
 #pragma once
 
 class Screen;
-class Inputs;
+class Switches;
 
 class IO: public Memory::Device {
 public:
-	IO(Screen &screen, Inputs &inputs): Memory::Device(256), _screen(screen), _inputs(inputs) {}
+	IO(Screen &screen, Switches &switches): Memory::Device(256), _screen(screen), _switches(switches) {}
 
 	void operator=(uint8_t) override;
 	operator uint8_t() override;
@@ -26,5 +26,5 @@ private:
 	bool _int_enabled, _sound_enabled, _screen_flipped;
 
 	Screen &_screen;
-	Inputs &_inputs;
+	Switches &_switches;
 };
