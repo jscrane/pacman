@@ -2,7 +2,7 @@
 #include <r65emu.h>
 
 #include "screen.h"
-#include "inputs.h"
+#include "switches.h"
 #include "io.h"
 #include "config.h"
 
@@ -48,10 +48,10 @@ void IO::operator=(uint8_t b) {
 
 IO::operator uint8_t() {
 	if (_acc >= INPUTS_0 && _acc < INPUTS_1)
-		return _inputs.read_input0();
+		return _switches.in0();
 
 	if (_acc >= INPUTS_1 && _acc < DIP_1)
-		return _inputs.read_input1();
+		return _switches.in1();
 
 	if (_acc >= DIP_1)
 		return DIP_SWITCHES;

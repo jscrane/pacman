@@ -1,17 +1,17 @@
-#include "kbd_inputs.h"
+#include "kbd_switches.h"
 
-void KbdInputs::down(uint16_t scan) {
+void KbdSwitches::down(uint16_t scan) {
 	switch (ps2_key(scan)) {
-	case KEY_UP:
+	case KBD_UP:
 		_up = false;
 		break;
-	case KEY_DOWN:
+	case KBD_DOWN:
 		_down = false;
 		break;
-	case KEY_LEFT:
+	case KBD_LEFT:
 		_left = false;
 		break;
-	case KEY_RIGHT:
+	case KBD_RIGHT:
 		_right = false;
 		break;
 	case P1_START:
@@ -26,18 +26,18 @@ void KbdInputs::down(uint16_t scan) {
 	}
 }
 
-void KbdInputs::up(uint16_t scan) {
+void KbdSwitches::up(uint16_t scan) {
 	switch (ps2_key(scan)) {
-	case KEY_UP:
+	case KBD_UP:
 		_up = true;
 		break;
-	case KEY_DOWN:
+	case KBD_DOWN:
 		_down = true;
 		break;
-	case KEY_LEFT:
+	case KBD_LEFT:
 		_left = true;
 		break;
-	case KEY_RIGHT:
+	case KBD_RIGHT:
 		_right = true;
 		break;
 	case P1_START:
